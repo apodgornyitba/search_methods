@@ -1,4 +1,5 @@
 from gamecolor import Color, GameColor
+import numpy as np
 
 class Parser():
 
@@ -25,9 +26,9 @@ class Parser():
                 color_indices.append(list(map(int, line.strip().split())))
                 
             # Create the matrix of actual colors
-            color_matrix = []
+            color_matrix = np.zeros((len(color_indices), len(color_indices[0])))
             for row in color_indices:
-                color_row = []
+                color_row = np.array([])
                 for index in row:
                     color_row.append(possible_colors[index])
                 color_matrix.append(color_row)
