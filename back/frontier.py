@@ -1,5 +1,6 @@
 # Used to implement deep-first search
-class StackFrontier():
+class DeepFirstSearch():
+
     def __init__(self):
         self.frontier = []
 
@@ -22,7 +23,7 @@ class StackFrontier():
             return node
 
 # Used to implement breadth-first search
-class QueueFrontier(StackFrontier):
+class BreadthFirstSearch(DeepFirstSearch):
 
     def remove(self):
         if self.empty():
