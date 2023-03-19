@@ -1,22 +1,36 @@
 from node import Node
-from frontier import DeepFirstSearch
-from fill_zone import FillZone
-from color import Color
+from frontier import DeepFirstSearch, BreadthFirstSearch
+from fill_zone import FillZone, GameStatus
+from gamecolor import Color
 import copy
+import time
 
 class Solver:
     def __init__(self):
         pass
 
-    def main(self):
-        grid_size = 9
-        color_amount = 5
+    def neighbors(self, state: FillZone):
+        candidates = []
+        next_state = None
+
+        for color in Color:                                 # Loading possible candidates from actual state
+            if state.current_color != color:                # Choosing the same color as before is an invalid action
+                next_state = copy.deepcopy(state)
+                next_state.change_color(color)
+                candidates.append((color, next_state))
+        
+        return candidates
+
+    def uninformed_method(self, algorithm: DeepFirstSearch):
+        grid_size = 6
+        color_amount = 6
         turns = 30
         self.num_explored = 0
         self.goal = None
 
-        start = Node(state=FillZone(grid_size, color_amount, turns), parent=None, action=None)
-        frontier = DeepFirstSearch()
+        initial_state = FillZone(grid_size, color_amount, turns)
+        start = Node(state=initial_state, parent=None, action=None)
+        frontier = algorithm
         frontier.add(start)
 
         # Initialize an empty explored set
@@ -34,28 +48,41 @@ class Solver:
             self.num_explored += 1
 
             # If node is the goal, then we have a solution
-            if node.state == self.goal:
+            if node.state.game_status == GameStatus.WIN:
                 actions = []
-                cells = []
                 while node.parent is not None:
-                    actions.append(node.action)
-                    cells.append(node.state)
+                    actions.append(node.action.name)
                     node = node.parent
                 actions.reverse()
-                cells.reverse()
-                self.solution = (actions, cells)
+                self.solution = actions
+                print('Solution: {}'.format(actions))
                 return
 
             # Mark node as explored
             self.explored.add(node.state)
 
+            # If game finished, don't expand solution
+            if node.state.game_status == GameStatus.LOSS:
+                # print('Game ended for action {}'.format(node.action))
+                continue
+
             # Add neighbors to frontier
-            for color in Color:
-                if color != node.state.current_color and not frontier.contains_state(node.state) and node.state not in self.explored:
-                    print('Agrego un nodo con color {}'.format(color.name))
-                    child = Node(state=copy.deepcopy(node.state), parent=node, action=color)
+            for action, state in self.neighbors(node.state):
+                if not frontier.contains_state(state) and state not in self.explored:
+                    child = Node(state=state, parent=node, action=action)
                     frontier.add(child)
 
 if __name__ == "__main__":
     solver = Solver()
-    solver.main()
+    dfs = DeepFirstSearch()
+    bfs = BreadthFirstSearch()
+
+    start = time.time()
+    solver.uninformed_method(dfs)
+    end = time.time()
+    print('Dfs time: {}'.format(end - start))
+
+    start = time.time()
+    solver.uninformed_method(bfs)
+    end = time.time()
+    print('Bfs time: {}'.format(end - start))
