@@ -28,24 +28,23 @@ class GameStatus:
 
 class FillZone:
 
-    def __init__(self, grid_size: int, color_amount: int, turns: int):
+    def __init__(self, grid_size: int, grid, color_amount: int, turns: int, current_color = None):
         self.__grid_size = grid_size
         self.__color_amount = color_amount
         self.__frontier_queue = deque()
         self.turns = turns
-        self.game_colors = [e.value for e in Color]
+        self.game_colors = [e for e in Color]
 
         self.remaining_cells = grid_size * grid_size - 1            # Initial cell is always colored
         self.game_status = GameStatus.CONTINUES
-        self.__setup_game_from_file('input.txt')
+        self.__setup_game(grid, grid[0][0] if current_color is None else current_color)
     
     def __deepcopy__(self, memodict={}):
-        cpy_obj = type(self)(self.__grid_size, self.__color_amount, self.turns)
-        cpy_obj.remaining_cells = self.remaining_cells
+        cpy_obj = type(self)(self.__grid_size, copy.deepcopy(self.grid), self.__color_amount, self.turns, self.current_color)
 
-        cpy_obj.grid = copy.deepcopy(self.grid)
-        cpy_obj.__frontier_queue = copy.deepcopy(self.__frontier_queue)
+        cpy_obj.remaining_cells = self.remaining_cells
         cpy_obj.game_status = self.game_status
+        cpy_obj.__frontier_queue = copy.deepcopy(self.__frontier_queue)
 
         return cpy_obj
     
@@ -65,29 +64,28 @@ class FillZone:
     
     def __neq__(self, obj):
         return not obj == self
-    
-    def __setup_game_from_file(self, file_path: str):
-        self.grid = Parser.parse_color_file(file_path)
-        self.current_color = self.grid[0][0]
-        self.grid[0][0] = GameColor.CURRENT.value
+
+    def __setup_game(self, grid, current_color):
+        self.grid = grid
+        self.current_color = current_color
+        self.grid[0][0] = GameColor.CURRENT
         self.__expand_frontier(0, 0, Direction.TOP)
 
-
-    # Sets up the grid
-    def __setup_game(self):
-        self.grid = np.zeros((self.__grid_size, self.__grid_size))
-        for x in range(self.__grid_size):
-            for y in range(self.__grid_size):
-                self.grid[x][y] = self.game_colors[randint(0, self.__color_amount)]
-        self.current_color = self.grid[0][0]
-        # print('Inicio con color {}'.format(self.grid[0][0]))
-        # print(self.grid)
-        self.grid[0][0] = GameColor.CURRENT.value
-        self.__expand_frontier(0, 0, Direction.TOP)
+    #Sets up the grid
+    #def __setup_game(self):
+    #    self.grid = np.zeros((self.__grid_size, self.__grid_size))
+    #    for x in range(self.__grid_size):
+    #        for y in range(self.__grid_size):
+    #            self.grid[x][y] = self.game_colors[randint(0, self.__color_amount)]
+    #    self.current_color = self.grid[0][0]
+    #    # print('Inicio con color {}'.format(self.grid[0][0]))
+    #    # print(self.grid)
+    #    self.grid[0][0] = GameColor.CURRENT.value
+    #    self.__expand_frontier(0, 0, Direction.TOP)
     
     # Returns GameStatus after move
     def change_color(self, new_color: Color):
-        self.current_color = new_color.value
+        self.current_color = new_color
         # print('Changing color to {}'.format(new_color.value))
 
         frontier_size = len(self.__frontier_queue)
@@ -113,13 +111,13 @@ class FillZone:
         return self.game_status
 
     def __is_frontier(self, x: int, y: int):
-        if x>0 and GameColor.CURRENT.value != self.grid[x - 1][y]:
+        if x>0 and GameColor.CURRENT != self.grid[x - 1][y]:
             return True
-        if x+1 < self.__grid_size and GameColor.CURRENT.value != self.grid[x + 1][y]:
+        if x+1 < self.__grid_size and GameColor.CURRENT != self.grid[x + 1][y]:
             return True
-        if y>0 and GameColor.CURRENT.value != self.grid[x][y - 1]:
+        if y>0 and GameColor.CURRENT != self.grid[x][y - 1]:
             return True
-        if y+1 < self.__grid_size and GameColor.CURRENT.value != self.grid[x][y + 1]:
+        if y+1 < self.__grid_size and GameColor.CURRENT != self.grid[x][y + 1]:
             return True
         return False
     
@@ -130,19 +128,20 @@ class FillZone:
     def __expand_frontier(self, x: int, y: int, dir_from: Direction):
         # Calculate if expansion is needed and do recursively
         if x+1 < self.__grid_size and self.current_color == self.grid[x+1][y] and dir_from != Direction.BOTTOM:
-            self.grid[x+1][y] = GameColor.CURRENT.value
+            self.grid[x+1][y] = GameColor.CURRENT
             self.remaining_cells = self.remaining_cells - 1
             self.__expand_frontier(x+1, y, Direction.TOP)
         if x>0 and self.current_color == self.grid[x-1][y] and dir_from != Direction.TOP:
-            self.grid[x-1][y] = GameColor.CURRENT.value
+            self.grid[x-1][y] = GameColor.CURRENT
             self.remaining_cells = self.remaining_cells - 1
             self.__expand_frontier(x-1, y, Direction.BOTTOM)
         if y+1 < self.__grid_size and self.current_color == self.grid[x][y+1] and dir_from != Direction.RIGHT:
-            self.grid[x][y+1] = GameColor.CURRENT.value
+            self.grid[x][y+1] = GameColor.CURRENT
             self.remaining_cells = self.remaining_cells - 1
             self.__expand_frontier(x, y+1, Direction.LEFT)
         if y>0 and self.current_color == self.grid[x][y-1] and dir_from != Direction.LEFT:
-            self.grid[x][y-1] = GameColor.CURRENT.value
+            # raise Exception('current is {} and prev is {}'.format(self.current_color, self.grid[x][y-1]))
+            self.grid[x][y-1] = GameColor.CURRENT
             self.remaining_cells = self.remaining_cells - 1
             self.__expand_frontier(x, y-1, Direction.RIGHT)
 
@@ -152,35 +151,3 @@ class FillZone:
 
     def __hash__(self) -> int:
         return hash(tuple(tuple(row) for row in self.grid))
-
-def main():
-    grid_size = 9
-    color_amount = 5
-    turns = 30
-
-    game = FillZone(grid_size, color_amount, turns)
-    game_colors = game.game_colors
-    start = timeit.timeit()
-    for i in range(turns-10):
-        new_color = game_colors[randint(1, color_amount)]
-        print('Changing color to {}'.format(new_color))
-        game.change_color(new_color)
-    new_game = copy.deepcopy(game)
-    for i in range(10):
-        new_color = game_colors[randint(1, color_amount)]
-        print('Changing color to {}'.format(new_color))
-        game.change_color(new_color)
-    print('Cambiooo')
-    print(new_game != game)
-    # def __init__(self, grid_size: int, color_amount: int,
-    #                 turns: int = 30, frontier_queue = queue.Queue(), remaining_cells = None, grid = None):
-    for i in range(10):
-        new_color = game_colors[randint(1, color_amount)]
-        print('Changing color to {}'.format(new_color))
-        new_game.change_color(new_color)
-
-    end = timeit.timeit()
-    print(end - start)
-
-if __name__ == "__main__":
-    main()

@@ -2,8 +2,11 @@ from node import Node
 from frontier import DeepFirstSearch, BreadthFirstSearch
 from fill_zone import FillZone, GameStatus
 from gamecolor import Color
+from parserInput import Parser
+
 import copy
 import time
+import sys
 
 class Solver:
     def __init__(self):
@@ -21,14 +24,10 @@ class Solver:
         
         return candidates
 
-    def uninformed_method(self, algorithm: DeepFirstSearch):
-        grid_size = 6
-        color_amount = 6
-        turns = 30
+    def uninformed_method(self, algorithm: DeepFirstSearch, grid_size: int, grid, color_amount: int, turns: int):
         self.num_explored = 0
-        self.goal = None
 
-        initial_state = FillZone(grid_size, color_amount, turns)
+        initial_state = FillZone(grid_size, grid, color_amount, turns)
         start = Node(state=initial_state, parent=None, action=None)
         frontier = algorithm
         frontier.add(start)
@@ -73,16 +72,27 @@ class Solver:
                     frontier.add(child)
 
 if __name__ == "__main__":
+    n = len(sys.argv)
+    turns = 30
+    if n < 2 or n > 3:
+        raise Exception('Only Grid size and optionally turns must be provided as argument')
+    if n == 3:
+        turns = int(sys.argv[2])
+
+    parser = Parser()
+    (color_amount, grid) = Parser.parse_color_file(sys.argv[1])
+    grid_size = len(grid)
+
     solver = Solver()
     dfs = DeepFirstSearch()
     bfs = BreadthFirstSearch()
 
     start = time.time()
-    solver.uninformed_method(dfs)
+    solver.uninformed_method(dfs, grid_size, grid, color_amount, turns)
     end = time.time()
     print('Dfs time: {}'.format(end - start))
 
     start = time.time()
-    solver.uninformed_method(bfs)
+    solver.uninformed_method(bfs, grid_size, grid, color_amount, turns)
     end = time.time()
     print('Bfs time: {}'.format(end - start))
