@@ -12,6 +12,7 @@ can handle very large grids and still have the same performance.
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.array_backed_grid_sprites_2
 """
+from fill_zone import FillZone
 import arcade
 import arcade.gui
 
@@ -50,6 +51,7 @@ class MyGame(arcade.Window):
         """
         Set up the application.
         """
+        self.grid = FillZone(10, 6)
         super().__init__(width, height, title)
 
         # Set the background color of the window
