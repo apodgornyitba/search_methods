@@ -1,4 +1,4 @@
-from color import Color
+from gamecolor import Color, GameColor
 
 class Parser():
 
@@ -14,9 +14,10 @@ class Parser():
         with open(filename, 'r') as file:
             # Read in the possible colors from the first line of the file
             possible_colors = file.readline().split(" ")
+            possible_colors[-1] = possible_colors[-1].split("\n")[0]   # Removing \n from last color
             for color in possible_colors:
-                if (color not in Color):
-                    raise ValueError("Invalid color")
+                if color not in [e.value for e in Color]:
+                    raise ValueError("Invalid color: {}".format(color))
             
             # Read in the matrix of color indices from the remaining lines of the file
             color_indices = []

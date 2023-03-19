@@ -1,10 +1,11 @@
-class Grid:
-    def __init__(self, size: int, colors):
-        self.__size = size
-        self.__colors = colors
+from fill_zone import FillZone
+from gamecolor import Color
 
 class Node:
-    def __init__(self, state, parent, action):
+    def __init__(self, state: FillZone, parent, action: Color):
         self.state = state
         self.parent = parent
         self.action = action
+    
+    def get_state(self):
+        return self.state

@@ -5,7 +5,7 @@ from parser import Parser
 
 import timeit
 import copy
-from color import Color
+from gamecolor import GameColor, Color
 
 # from TP1.back.node import Grid
 class Direction(IntEnum):
@@ -35,7 +35,8 @@ class FillZone:
         self.game_colors = [e.value for e in Color]
 
         self.remaining_cells = grid_size * grid_size - 1            # Initial cell is always colored
-        self.__setup_game()
+        self.game_status = GameStatus.CONTINUES
+        self.__setup_game_from_file('input.txt')
     
     def __deepcopy__(self, memodict={}):
         cpy_obj = type(self)(self.__grid_size, self.__color_amount, self.turns)
@@ -43,15 +44,18 @@ class FillZone:
 
         cpy_obj.grid = copy.deepcopy(self.grid)
         cpy_obj.__frontier_queue = copy.deepcopy(self.__frontier_queue)
+        cpy_obj.game_status = self.game_status
 
         return cpy_obj
     
     def __eq__(self, obj):
         if not isinstance(obj, FillZone):
             return False
-        for i in range(len(self.__frontier_queue)):
-            if not self.__frontier_queue[i] in obj.__frontier_queue:
-                return False
+        # for i in range(len(self.__frontier_queue)):
+        #     if not self.__frontier_queue[i] in obj.__frontier_queue:
+        #         return False
+        if self.current_color != obj.current_color:
+            return False
         for x in range(self.__grid_size):
             for y in range(self.__grid_size):
                 if self.grid[x][y] != obj.grid[x][y]:
@@ -62,9 +66,9 @@ class FillZone:
         return not obj == self
     
     def __setup_game_from_file(self, file_path: str):
-        self_grid = Parser.parse_color_file(file_path)
+        self.grid = Parser.parse_color_file(file_path)
         self.current_color = self.grid[0][0]
-        self.grid[0][0] = Color.CURRENT.value
+        self.grid[0][0] = GameColor.CURRENT.value
         self.__expand_frontier(0, 0, Direction.TOP)
 
 
@@ -76,16 +80,17 @@ class FillZone:
             for y in range(self.__grid_size):
                 if y == 0:
                     self.grid[x] = [None] * self.__grid_size
-                self.grid[x][y] = self.game_colors[randint(1, self.__color_amount)]
+                self.grid[x][y] = self.game_colors[randint(0, self.__color_amount)]
         self.current_color = self.grid[0][0]
         # print('Inicio con color {}'.format(self.grid[0][0]))
         # print(self.grid)
-        self.grid[0][0] = Color.CURRENT.value
+        self.grid[0][0] = GameColor.CURRENT.value
         self.__expand_frontier(0, 0, Direction.TOP)
     
     # Returns GameStatus after move
     def change_color(self, new_color: Color):
-        self.current_color = new_color
+        self.current_color = new_color.value
+        # print('Changing color to {}'.format(new_color.value))
 
         frontier_size = len(self.__frontier_queue)
         for i in range(frontier_size):
@@ -93,31 +98,30 @@ class FillZone:
             self.__expand_frontier(cell.x, cell.y, cell.dir_from)
         
         if self.remaining_cells <= 0:       # TODO: Check it stops at zero
-            print('You won')
-            return GameStatus.WIN
+            # print('You won')
+            self.game_status = GameStatus.WIN
         
-        if self.turns == 0:
-            print('You lost')
-            return GameStatus.LOSS
+        if self.turns <= 0:
+            # print('You lost')
+            self.game_status = GameStatus.LOSS
         
         self.turns = self.turns - 1
-        print('Remaining turns: {}'.format(self.turns))
-        print('Remaining cells: {}'.format(self.remaining_cells))
+        # print('Remaining turns: {}'.format(self.turns))
+        # print('Remaining cells: {}'.format(self.remaining_cells))
         # print('Frontier cells: {}'.format(self.__frontier_queue.qsize()))
         #for cell in self.__frontier_queue:
         #    print('- x: {}, y: {}, from: {}'.format(cell.x, cell.y, cell.dir_from.name))
-        print(self.grid)
-        print()
-        return GameStatus.CONTINUES
+        # print(self.grid)
+        return self.game_status
 
     def __is_frontier(self, x: int, y: int):
-        if x>0 and Color.CURRENT.value != self.grid[x-1][y]:
+        if x>0 and GameColor.CURRENT.value != self.grid[x - 1][y]:
             return True
-        if x+1 < self.__grid_size and Color.CURRENT.value != self.grid[x+1][y]:
+        if x+1 < self.__grid_size and GameColor.CURRENT.value != self.grid[x + 1][y]:
             return True
-        if y>0 and Color.CURRENT.value != self.grid[x][y-1]:
+        if y>0 and GameColor.CURRENT.value != self.grid[x][y - 1]:
             return True
-        if y+1 < self.__grid_size and Color.CURRENT.value != self.grid[x][y+1]:
+        if y+1 < self.__grid_size and GameColor.CURRENT.value != self.grid[x][y + 1]:
             return True
         return False
     
@@ -128,19 +132,19 @@ class FillZone:
     def __expand_frontier(self, x: int, y: int, dir_from: Direction):
         # Calculate if expansion is needed and do recursively
         if x+1 < self.__grid_size and self.current_color == self.grid[x+1][y] and dir_from != Direction.BOTTOM:
-            self.grid[x+1][y] = Color.CURRENT.value
+            self.grid[x+1][y] = GameColor.CURRENT.value
             self.remaining_cells = self.remaining_cells - 1
             self.__expand_frontier(x+1, y, Direction.TOP)
         if x>0 and self.current_color == self.grid[x-1][y] and dir_from != Direction.TOP:
-            self.grid[x-1][y] = Color.CURRENT.value
+            self.grid[x-1][y] = GameColor.CURRENT.value
             self.remaining_cells = self.remaining_cells - 1
             self.__expand_frontier(x-1, y, Direction.BOTTOM)
         if y+1 < self.__grid_size and self.current_color == self.grid[x][y+1] and dir_from != Direction.RIGHT:
-            self.grid[x][y+1] = Color.CURRENT.value
+            self.grid[x][y+1] = GameColor.CURRENT.value
             self.remaining_cells = self.remaining_cells - 1
             self.__expand_frontier(x, y+1, Direction.LEFT)
         if y>0 and self.current_color == self.grid[x][y-1] and dir_from != Direction.LEFT:
-            self.grid[x][y-1] = Color.CURRENT.value
+            self.grid[x][y-1] = GameColor.CURRENT.value
             self.remaining_cells = self.remaining_cells - 1
             self.__expand_frontier(x, y-1, Direction.RIGHT)
 
