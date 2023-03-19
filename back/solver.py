@@ -3,7 +3,7 @@ from frontier import DeepFirstSearch, BreadthFirstSearch
 from fill_zone import FillZone, GameStatus
 from gamecolor import Color
 import copy
-import timeit
+import time
 
 class Solver:
     def __init__(self):
@@ -22,7 +22,7 @@ class Solver:
         return candidates
 
     def uninformed_method(self, algorithm: DeepFirstSearch):
-        grid_size = 5
+        grid_size = 6
         color_amount = 6
         turns = 30
         self.num_explored = 0
@@ -77,12 +77,12 @@ if __name__ == "__main__":
     dfs = DeepFirstSearch()
     bfs = BreadthFirstSearch()
 
-    start = timeit.timeit()
+    start = time.time()
     solver.uninformed_method(dfs)
-    end = timeit.timeit()
+    end = time.time()
     print('Dfs time: {}'.format(end - start))
 
-    start = timeit.timeit()
+    start = time.time()
     solver.uninformed_method(bfs)
-    end = timeit.timeit()
+    end = time.time()
     print('Bfs time: {}'.format(end - start))
