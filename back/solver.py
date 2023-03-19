@@ -7,6 +7,7 @@ from parserInput import Parser
 import copy
 import time
 import sys
+import random
 
 class Solver:
     def __init__(self):
@@ -92,6 +93,15 @@ class Solver:
         if isinstance(algorithm, BreadthFirstSearch):
             algorithm = 'BFS' 
         self.print_game_statistics(algorithm, result, cost, self.num_explored, len(frontier.frontier), actions, end_time - start_time)
+    
+    def generate_random_grid(self, grid_size: int, color_amount: int):
+        grid = []
+        for i in range(grid_size):
+            row = []
+            for j in range(grid_size):
+                row.append(Color(random.randint(0, color_amount - 1)))
+            grid.append(row)
+        return grid
 
 if __name__ == "__main__":
     n = len(sys.argv)
