@@ -1,7 +1,8 @@
 from enum import IntEnum
 from random import randint
 from collections import deque
-from parser import Parser
+from parserInput import Parser
+import numpy as np
 
 import timeit
 import copy
@@ -70,12 +71,9 @@ class FillZone:
 
     # Sets up the grid
     def __setup_game(self):
+        self.grid = np.zeros((self.__grid_size, self.__grid_size))
         for x in range(self.__grid_size):
-            if x == 0:
-                self.grid = [None] * self.__grid_size
             for y in range(self.__grid_size):
-                if y == 0:
-                    self.grid[x] = [None] * self.__grid_size
                 self.grid[x][y] = self.game_colors[randint(1, self.__color_amount)]
         self.current_color = self.grid[0][0]
         # print('Inicio con color {}'.format(self.grid[0][0]))
