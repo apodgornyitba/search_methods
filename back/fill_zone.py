@@ -4,7 +4,6 @@ from collections import deque
 from parserInput import Parser
 import numpy as np
 
-import timeit
 import copy
 from gamecolor import GameColor, Color
 
@@ -51,9 +50,6 @@ class FillZone:
     def __eq__(self, obj):
         if not isinstance(obj, FillZone):
             return False
-        # for i in range(len(self.__frontier_queue)):
-        #     if not self.__frontier_queue[i] in obj.__frontier_queue:
-        #         return False
         if self.current_color != obj.current_color:
             return False
         for x in range(self.__grid_size):
@@ -70,18 +66,6 @@ class FillZone:
         self.current_color = current_color
         self.grid[0][0] = GameColor.CURRENT
         self.__expand_frontier(0, 0, Direction.TOP)
-
-    #Sets up the grid
-    #def __setup_game(self):
-    #    self.grid = np.zeros((self.__grid_size, self.__grid_size))
-    #    for x in range(self.__grid_size):
-    #        for y in range(self.__grid_size):
-    #            self.grid[x][y] = self.game_colors[randint(0, self.__color_amount)]
-    #    self.current_color = self.grid[0][0]
-    #    # print('Inicio con color {}'.format(self.grid[0][0]))
-    #    # print(self.grid)
-    #    self.grid[0][0] = GameColor.CURRENT.value
-    #    self.__expand_frontier(0, 0, Direction.TOP)
     
     # Returns GameStatus after move
     def change_color(self, new_color: Color):

@@ -23,9 +23,25 @@ class Solver:
                 candidates.append((color, next_state))
         
         return candidates
+    
+    def print_game_statistics(self, algorithm: str, result: str, cost: int, expanded_nodes: int, frontier_nodes: int, solution, time_elapsed):
+        print('- Algorithm: {}'.format(algorithm))
+        print('- Result: {}'.format(result))
+        print('- Cost: {}'.format(cost))
+        print('- Expanded Nodes: {}'.format(expanded_nodes))
+        print('- Frontier Nodes: {}'.format(frontier_nodes))
+        print('- Solution: {}'.format(solution))
+        print('- Time elapsed: {}'.format(time_elapsed))
+        print()
+
 
     def uninformed_method(self, algorithm: DeepFirstSearch, grid_size: int, grid, color_amount: int, turns: int):
         self.num_explored = 0
+        actions = []
+        result = 'LOSS'
+        cost = None
+
+        start_time = time.time()
 
         initial_state = FillZone(grid_size, grid, color_amount, turns)
         start = Node(state=initial_state, parent=None, action=None)
@@ -40,7 +56,7 @@ class Solver:
 
             # If nothing left in frontier, then no path
             if frontier.empty():
-                raise Exception("no solution")
+                break
 
             # Choose a node from the frontier
             node = frontier.remove()
@@ -48,14 +64,14 @@ class Solver:
 
             # If node is the goal, then we have a solution
             if node.state.game_status == GameStatus.WIN:
-                actions = []
+                result = 'WIN'
                 while node.parent is not None:
                     actions.append(node.action.name)
                     node = node.parent
                 actions.reverse()
                 self.solution = actions
-                print('Solution: {}'.format(actions))
-                return
+                cost = len(actions)
+                break
 
             # Mark node as explored
             self.explored.add(node.state)
@@ -70,6 +86,12 @@ class Solver:
                 if not frontier.contains_state(state) and state not in self.explored:
                     child = Node(state=state, parent=node, action=action)
                     frontier.add(child)
+        end_time = time.time()
+
+        algorithm = 'DFS'
+        if isinstance(algorithm, BreadthFirstSearch):
+            algorithm = 'BFS' 
+        self.print_game_statistics(algorithm, result, cost, self.num_explored, len(frontier.frontier), actions, end_time - start_time)
 
 if __name__ == "__main__":
     n = len(sys.argv)
@@ -87,12 +109,6 @@ if __name__ == "__main__":
     dfs = DeepFirstSearch()
     bfs = BreadthFirstSearch()
 
-    start = time.time()
     solver.uninformed_method(dfs, grid_size, grid, color_amount, turns)
-    end = time.time()
-    print('Dfs time: {}'.format(end - start))
 
-    start = time.time()
     solver.uninformed_method(bfs, grid_size, grid, color_amount, turns)
-    end = time.time()
-    print('Bfs time: {}'.format(end - start))
