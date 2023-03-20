@@ -112,3 +112,76 @@ if __name__ == "__main__":
     solver.uninformed_method(dfs, grid_size, grid, color_amount, turns)
 
     solver.uninformed_method(bfs, grid_size, grid, color_amount, turns)
+
+
+def remaining_colors_heuristic(grid, color_amount):
+    colors = set()
+    for row in grid:
+        for color in row:
+            colors.add(color)
+            if len(colors) == color_amount:
+                break
+    return len(colors)
+
+
+def color_fraction_heuristic(grid, grid_size):
+    total_cells = grid_size * grid_size
+    color_counts = {}
+    for row in grid:
+        for color in row:
+            if color is not None:
+                if color in color_counts:
+                    color_counts[color] += 1
+                else:
+                    color_counts[color] = 1
+    color_fractions = [count / total_cells for count in color_counts.values()]
+    heuristic = sum(color_fractions)
+    return heuristic
+
+def bronson_distance_heuristic(grid, grid_size):
+    # Busca la celda más alejada
+    max_distance = 0
+    farthest_cell = None
+    for i in range(grid_size):
+        for j in range(grid_size):
+            if grid[i][j] is None:
+                distance = min(i, j, grid_size-i-1, grid_size-j-1)
+                if distance > max_distance:
+                    max_distance = distance
+                    farthest_cell = (i, j)
+    if farthest_cell is None:
+        return 0  # Ya se terminó el juego
+
+    # Crea un grafo de las celdas no controladas
+    graph = {}
+    for i in range(grid_size):
+        for j in range(grid_size):
+            if grid[i][j] is None:
+                neighbors = []
+                if i > 0 and grid[i-1][j] is None:
+                    neighbors.append(((i-1, j), 1))
+                if i < grid_size-1 and grid[i+1][j] is None:
+                    neighbors.append(((i+1, j), 1))
+                if j > 0 and grid[i][j-1] is None:
+                    neighbors.append(((i, j-1), 1))
+                if j < grid_size-1 and grid[i][j+1] is None:
+                    neighbors.append(((i, j+1), 1))
+                graph[(i, j)] = neighbors
+
+    # Utiliza Dijkstra para encontrar la distancia mínima entre cada celda y la celda más alejada del borde
+    distances = {cell: sys.maxsize for cell in graph.keys()}
+    distances[farthest_cell] = 0
+    heap = [(0, farthest_cell)]
+    while heap:
+        (distance, current) = heapq.heappop(heap)
+        if distance > distances[current]:
+            continue
+        for (neighbor, weight) in graph[current]:
+            new_distance = distance + weight
+            if new_distance < distances[neighbor]:
+                distances[neighbor] = new_distance
+                heapq.heappush(heap, (new_distance, neighbor))
+
+    # Toma el valor máximo de las distancias encontradas como la heurística
+    heuristic = max(distances.values())
+    return heuristic
