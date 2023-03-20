@@ -36,7 +36,7 @@ class Solver:
         print()
 
 
-    def uninformed_method(self, algorithm: DeepFirstSearch, grid_size: int, grid, color_amount: int, turns: int):
+    def uninformed_method(self, algorithm, grid_size: int, grid, color_amount: int, turns: int):
         self.num_explored = 0
         actions = []
         result = 'LOSS'
@@ -89,36 +89,51 @@ class Solver:
                     frontier.add(child)
         end_time = time.time()
 
-        algorithm = 'DFS'
-        if isinstance(algorithm, BreadthFirstSearch):
-            algorithm = 'BFS' 
+        algorithm = algorithm.name
         self.print_game_statistics(algorithm, result, cost, self.num_explored, len(frontier.frontier), actions, end_time - start_time)
     
-    def generate_random_grid(self, grid_size: int, color_amount: int):
-        grid = []
-        for i in range(grid_size):
-            row = []
-            for j in range(grid_size):
-                row.append(Color(random.randint(0, color_amount - 1)))
-            grid.append(row)
-        return grid
+def generate_random_grid(grid_size: int, color_amount: int):
+    grid = []
+    for i in range(grid_size):
+        row = []
+        for j in range(grid_size):
+            row.append(Color(random.randint(0, color_amount - 1)))
+        grid.append(row)
+    return grid
 
 if __name__ == "__main__":
     n = len(sys.argv)
     turns = 30
-    if n < 2 or n > 3:
+    
+    if n > 5:
         raise Exception('Only Grid size and optionally turns must be provided as argument')
-    if n == 3:
-        turns = int(sys.argv[2])
 
     parser = Parser()
-    (color_amount, grid) = Parser.parse_color_file(sys.argv[1])
-    grid_size = len(grid)
+
+    match sys.argv[1]:    
+        case '-r':
+            if sys.argv[2] is None or int(sys.argv[2]) <= 0:
+                raise Exception('Invalid grid size')
+            grid_size = int(sys.argv[2])
+            if sys.argv[3] is None or int(sys.argv[3]) <= 0:
+                raise Exception('Invalid color amount')
+            color_amount = int(sys.argv[3])
+            if sys.argv[4] is None or int(sys.argv[4]) <= 0:
+                raise Exception('Invalid turn amount')
+            turns = int(sys.argv[4])
+            grid = generate_random_grid(grid_size, color_amount)
+        case _:
+            if sys.argv[1] is None:
+                raise Exception('Invalid file path')
+            if sys.argv[2] is None:
+                raise Exception('Invalid turn amount')
+            (color_amount, grid) = Parser.parse_color_file(sys.argv[1])
+            grid_size = len(grid)
+            turns = int(sys.argv[2])
 
     solver = Solver()
     dfs = DeepFirstSearch()
     bfs = BreadthFirstSearch()
 
     solver.uninformed_method(dfs, grid_size, grid, color_amount, turns)
-
     solver.uninformed_method(bfs, grid_size, grid, color_amount, turns)
