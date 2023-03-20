@@ -7,6 +7,7 @@ from parserInput import Parser
 import copy
 import time
 import sys
+import heapq
 
 class Solver:
     def __init__(self):
