@@ -12,9 +12,13 @@ can handle very large grids and still have the same performance.
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.array_backed_grid_sprites_2
 """
-from fill_zone import FillZone
 import arcade
 import arcade.gui
+import sys
+
+from back.gamecolor import GameColor
+from back.fill_zone import FillZone
+from back.parser import Parser
 
 # N: Number of rows and columns
 # M: Number of colors available
@@ -22,7 +26,7 @@ N = 10
 M = 5
 
 # WHITE, RED, GREEN, BLUE, YELLOW
-COLORS = ['#FFFFFF', '#FF0000', '#00FF00', '#0000FF', '#FFFF00']
+COLORS = ['#ff64cc', '#ffffff', '#e40000', '#01e700', '#0068ff', '#ffe700']
 
 # Set how many rows and columns we will have
 ROW_COUNT = N
@@ -37,8 +41,8 @@ HEIGHT = 30
 MARGIN = 5
 
 # Do the math to figure out our screen dimensions
-SCREEN_WIDTH = (WIDTH + MARGIN) * COLUMN_COUNT + MARGIN
-SCREEN_HEIGHT = (HEIGHT + MARGIN) * ROW_COUNT + MARGIN + 50
+# SCREEN_WIDTH = (WIDTH + MARGIN) * COLUMN_COUNT + MARGIN
+# SCREEN_HEIGHT = (HEIGHT + MARGIN) * ROW_COUNT + MARGIN + 50
 SCREEN_TITLE = "Fill-Zone game"
 
 
@@ -47,12 +51,21 @@ class MyGame(arcade.Window):
     Main application class.
     """
 
-    def __init__(self, width, height, title):
+    def __init__(self, input_file: str, solution_file: str): #, width, height, title):
         """
         Set up the application.
         """
-        self.grid = FillZone(10, 6)
-        super().__init__(width, height, title)
+        parser = Parser()
+        (self.color_amount, self.grid) = parser.parse_color_file(input_file)
+        self.grid_size = len(self.grid)
+        (self.turns, self.solution) = parser.parse_solution_file(solution_file)
+
+        self.grid = FillZone(self.grid_size, self.grid, self.color_amount, )
+
+        self.screen_width = (WIDTH + MARGIN) * self.grid_size + MARGIN
+        self.screen_height = (HEIGHT + MARGIN) * self.grid_size + MARGIN
+
+        super().__init__(self.screen_width, self.screen_height, SCREEN_TITLE)
 
         # Set the background color of the window
         self.background_color = arcade.color.BLACK
@@ -64,7 +77,7 @@ class MyGame(arcade.Window):
         for color in COLORS:
             sprite = arcade.SpriteSolidColor(WIDTH, HEIGHT, arcade.color_from_hex_string(color))
             sprite.center_x = 25 + i * (WIDTH + 10)
-            sprite.center_y = SCREEN_HEIGHT - 25
+            sprite.center_y = self.screen_height - 25
             self.color_sprite_list.append(sprite)
             i += 1
 
@@ -155,7 +168,12 @@ class MyGame(arcade.Window):
 
 
 def main():
-    MyGame(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+    n = sys.argv
+    if n != 2:
+        raise Exception('Must provide both input grid and solution files')
+    input_file = sys.argv[0]
+    solution_file = sys.argv[1]
+    MyGame(input_file, solution_file)
     arcade.run()
 
 

@@ -1,11 +1,9 @@
 from enum import IntEnum
 from random import randint
 from collections import deque
-from parserInput import Parser
-import numpy as np
+from gamecolor import GameColor, Color
 
 import copy
-from gamecolor import GameColor, Color
 
 # from TP1.back.node import Grid
 class Direction(IntEnum):
@@ -46,20 +44,6 @@ class FillZone:
         cpy_obj.__frontier_queue = copy.deepcopy(self.__frontier_queue)
 
         return cpy_obj
-    
-    def __eq__(self, obj):
-        if not isinstance(obj, FillZone):
-            return False
-        if self.current_color != obj.current_color:
-            return False
-        for x in range(self.__grid_size):
-            for y in range(self.__grid_size):
-                if self.grid[x][y] != obj.grid[x][y]:
-                    return False
-        return True
-    
-    def __neq__(self, obj):
-        return not obj == self
 
     def __setup_game(self, grid, current_color):
         self.grid = grid
@@ -132,6 +116,20 @@ class FillZone:
         # Recalculate frontier after expansion finished
         if self.__is_frontier(x, y):
             self.__frontier_queue.appendleft(Cell(x, y, dir_from))
+
+    def __eq__(self, obj):
+        if not isinstance(obj, FillZone):
+            return False
+        if self.current_color != obj.current_color:
+            return False
+        for x in range(self.__grid_size):
+            for y in range(self.__grid_size):
+                if self.grid[x][y] != obj.grid[x][y]:
+                    return False
+        return True
+    
+    def __neq__(self, obj):
+        return not obj == self
 
     def __hash__(self) -> int:
         return hash(tuple(tuple(row) for row in self.grid))

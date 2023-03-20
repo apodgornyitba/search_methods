@@ -2,7 +2,7 @@ from node import Node
 from frontier import DeepFirstSearch, BreadthFirstSearch
 from fill_zone import FillZone, GameStatus
 from gamecolor import Color
-from parserInput import Parser
+from parser import Parser
 
 import copy
 import time
@@ -36,13 +36,15 @@ class Solver:
         print()
 
 
-    def uninformed_method(self, algorithm, grid_size: int, grid, color_amount: int, turns: int):
+    def uninformed_method(self, algorithm, grid_size: int, grid, color_amount: int, turns: int, input_file: str = None):
         self.num_explored = 0
         actions = []
         result = 'LOSS'
         cost = None
 
         start_time = time.time()
+
+        starting_color = grid[0][0]         # Saving it bc algotirhm overrides it
 
         initial_state = FillZone(grid_size, grid, color_amount, turns)
         start = Node(state=initial_state, parent=None, action=None)
@@ -91,6 +93,11 @@ class Solver:
 
         algorithm = algorithm.name
         self.print_game_statistics(algorithm, result, cost, self.num_explored, len(frontier.frontier), actions, end_time - start_time)
+        grid[0][0] = starting_color
+        if not input_file is None:
+            parser.generate_solution_file(algorithm, grid, input_file, actions)
+        else:
+            parser.generate_solution_file(algorithm=algorithm, input_file = None, grid= grid,solution= actions)
     
 def generate_random_grid(grid_size: int, color_amount: int):
     grid = []
@@ -104,6 +111,7 @@ def generate_random_grid(grid_size: int, color_amount: int):
 if __name__ == "__main__":
     n = len(sys.argv)
     turns = 30
+    input_file = None
     
     if n > 5:
         raise Exception('Only Grid size and optionally turns must be provided as argument')
@@ -129,11 +137,12 @@ if __name__ == "__main__":
                 raise Exception('Invalid turn amount')
             (color_amount, grid) = Parser.parse_color_file(sys.argv[1])
             grid_size = len(grid)
+            input_file = sys.argv[1]
             turns = int(sys.argv[2])
 
     solver = Solver()
     dfs = DeepFirstSearch()
     bfs = BreadthFirstSearch()
 
-    solver.uninformed_method(dfs, grid_size, grid, color_amount, turns)
-    solver.uninformed_method(bfs, grid_size, grid, color_amount, turns)
+    solver.uninformed_method(dfs, grid_size, grid, color_amount, turns, input_file)
+    solver.uninformed_method(bfs, grid_size, grid, color_amount, turns, input_file)
