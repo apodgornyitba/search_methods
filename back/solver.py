@@ -1,3 +1,4 @@
+import heapq
 from node import Node
 from frontier import DeepFirstSearch, BreadthFirstSearch, PriorityQueue
 from fill_zone import FillZone, GameStatus
@@ -92,14 +93,6 @@ class Solver:
         algorithm = algorithm.name
         self.print_game_statistics(algorithm, result, cost, self.num_explored, len(frontier.frontier), actions, end_time - start_time)
         
-def generate_random_grid(grid_size: int, color_amount: int):
-    grid = []
-    for i in range(grid_size):
-        row = []
-        for j in range(grid_size):
-            row.append(Color(random.randint(0, color_amount - 1)))
-        grid.append(row)
-    return grid
 
     def greedy(self, grid_size: int, grid, color_amount: int, turns: int, heuristic):
         self.num_explored = 0
@@ -219,6 +212,15 @@ def bronson_distance_heuristic(grid, grid_size):
     # Toma el valor máximo de las distancias encontradas como la heurística
     heuristic = max(distances.values())
     return heuristic
+
+def generate_random_grid(grid_size: int, color_amount: int):
+    grid = []
+    for i in range(grid_size):
+        row = []
+        for j in range(grid_size):
+            row.append(Color(random.randint(0, color_amount - 1)))
+        grid.append(row)
+    return grid
 
     
 
