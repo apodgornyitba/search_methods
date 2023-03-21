@@ -1,6 +1,5 @@
-from queue import PriorityQueue
 from node import Node
-from frontier import DeepFirstSearch, BreadthFirstSearch
+from frontier import DeepFirstSearch, BreadthFirstSearch, PriorityQueue
 from fill_zone import FillZone, GameStatus
 from gamecolor import Color
 from parserInput import Parser
@@ -106,38 +105,38 @@ class Solver:
         initial_state = FillZone(grid_size, grid, color_amount, turns)
         start = Node(state=initial_state, parent=None, action=None)
         frontier = PriorityQueue()
-        frontier.add(start, heuristic(start.state.grid, grid_size))
+        frontier.add((start, heuristic(start.state.grid, grid_size)))
         # Initialize an empty explored set
         self.explored = set()
         while True:
-            if (len(frontier) == 0):
+            if frontier.empty():
                 break
-            n = frontier.get()
+            n = frontier.remove()
             self.num_explored += 1
 
             # If node is the goal, then we have a solution
-            if n.state.game_status == GameStatus.WIN:
+            if n[0].state.game_status == GameStatus.WIN:
                 result = 'WIN'
-                while n.parent is not None:
-                    actions.append(n.action.name)
-                    n = n.parent
+                while n[0].parent is not None:
+                    actions.append(n[0].action.name)
+                    n = n[0].parent
                 actions.reverse()
                 self.solution = actions
                 cost = len(actions)
                 break
 
             # Mark node as explored
-            self.explored.add(n.state)
+            self.explored.add(n[0].state)
 
             # If game finished, don't expand solution
-            if n.state.game_status == GameStatus.LOSS:
+            if n[0].state.game_status == GameStatus.LOSS:
                 continue
 
             # Add neighbors to frontier
-            for action, state in self.neighbors(n.state):
+            for action, state in self.neighbors(n[0].state):
                 if not frontier.contains_state(state) and state not in self.explored:
                     child = Node(state=state, parent=n, action=action)
-                    frontier.add(child, heuristic(child.state.grid, grid_size))
+                    frontier.add((child, heuristic(child.state.grid, grid_size)))
         end_time = time.time()
 
         self.print_game_statistics('Greedy', result, cost, self.num_explored, len(frontier.frontier), actions, end_time - start_time)

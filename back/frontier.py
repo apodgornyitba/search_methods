@@ -33,3 +33,21 @@ class BreadthFirstSearch(DeepFirstSearch):
             node = self.frontier[0]
             self.frontier = self.frontier[1:]
             return node
+        
+class PriorityQueue(DeepFirstSearch):
+
+    def contains_state(self, state):
+        return any(node.state == state for node, _ in self.frontier)
+
+    def remove(self):
+        if self.empty():
+            raise Exception("empty frontier")
+        else:
+            # the node with the lowest priority is the first one
+            max_val = 0
+            for i in range(len(self.frontier)):
+                if self.frontier[i][1] < self.frontier[max_val][1]:
+                    max_val = i
+            node = self.frontier[max_val]
+            del self.frontier[max_val]
+            return node
