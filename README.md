@@ -40,7 +40,23 @@ $> python ./game/solver.py ./input_grids/10x10.txt 30
 $> python ./game/solver.py -r 10 6 30
 ```
 
-Además, el algoritmo genera archivos de salida con la grilla evaluada y la solución encontrada para dicha grilla, dentro de la carpeta ```solutions``` donde, por ejemplo, el archivo __"10x10.txt"__ genera, usando los algoritmos DFS y BFS, los correspondientes archivos de salida __"DFS-sol-10x10.txt"__ y __"BFS-sol-10x10.txt"__
+Además, el algoritmo genera archivos de salida con la grilla evaluada y la solución encontrada para dicha grilla, dentro de la carpeta ```solutions``` donde, por ejemplo, el archivo __"10x10.txt"__ genera, usando los algoritmos DFS y BFS, los correspondientes archivos de salida __"DFS-sol-10x10.txt"__ y __"BFS-sol-10x10.txt"__.
+
+El formato de dichos archivos es de primero la grilla inicial y luego la serie de acciones necesaria para resolverla, como por ejemplo:
+
+```bash
+# Grilla de 4x4 y 4 colores
+WHITE GREEN WHITE PURPLE 
+RED WHITE RED RED 
+PURPLE PURPLE RED PURPLE 
+PURPLE WHITE RED GREEN 
+RED
+PURPLE
+RED
+PURPLE
+WHITE
+GREEN
+```
 
 ### Visualizador de soluciones
 
