@@ -197,9 +197,9 @@ class Solver:
                 if not frontier.contains_state(state) and state not in self.explored:
                     child = Node(state=state, parent=n, action=action)
                     if heuristic.__name__ == 'remaining_colors_heuristic':
-                        frontier.add((child, child.get_current_cost + heuristic(child.state.grid, color_amount)))
+                        frontier.add((child, child.get_current_cost() + heuristic(child.state.grid, color_amount)))
                     else:
-                        frontier.add((child, child.get_current_cost + heuristic(child.state.grid, grid_size)))
+                        frontier.add((child, child.get_current_cost() + heuristic(child.state.grid, grid_size)))
         end_time = time.time()
 
         self.print_game_statistics('A*', result, cost, self.num_explored, len(frontier.frontier), actions, end_time - start_time, heuristic) 
@@ -335,4 +335,5 @@ if __name__ == "__main__":
     solver.uninformed_method(dfs, grid_size, grid, color_amount, turns)
     solver.uninformed_method(bfs, grid_size, grid, color_amount, turns)
 
-    solver.greedy(grid_size, grid, color_amount, turns, bronson_distance_heuristic)
+    solver.greedy(grid_size, grid, color_amount, turns, remaining_colors_heuristic)
+    solver.a_search(grid_size, grid, color_amount, turns, bronson_distance_heuristic)
