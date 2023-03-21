@@ -123,8 +123,10 @@ class Solver:
         frontier = PriorityQueue()
         if heuristic.__name__ == 'remaining_colors_heuristic':
             frontier.add((start, heuristic(start.state.grid, color_amount)))
-        else:
+        elif heuristic.__name__ == 'color_fraction_heuristic':
             frontier.add((start, heuristic(start.state.grid, grid_size)))
+        else:
+            frontier.add((start, heuristic(grid_size, start.state.current_color_cells)))
             
         # Initialize an empty explored set
         self.explored = set()
@@ -159,13 +161,18 @@ class Solver:
                     if algorithm == 'greedy':
                         if heuristic.__name__ == 'remaining_colors_heuristic':
                             frontier.add((child, heuristic(child.state.grid, color_amount)))
-                        else:
+                        elif heuristic.__name__ == 'color_fraction_heuristic':
                             frontier.add((child, heuristic(child.state.grid, grid_size)))
+                        else:
+                            frontier.add((child, heuristic(grid_size, child.state.current_color_cells)))
                     elif algorithm == 'a_star':
                         if heuristic.__name__ == 'remaining_colors_heuristic':
                             frontier.add((child, child.get_current_cost() + heuristic(child.state.grid, color_amount)))
-                        else:
+                        elif heuristic.__name__ == 'color_fraction_heuristic':
                             frontier.add((child, child.get_current_cost() + heuristic(child.state.grid, grid_size)))
+                        else:
+                            frontier.add((child, child.get_current_cost() + heuristic(grid_size, child.state.current_color_cells)))
+                            
         end_time = time.time()
 
         self.print_game_statistics(algorithm, result, cost, self.num_explored, len(frontier.frontier), actions, end_time - start_time, heuristic)
@@ -203,35 +210,37 @@ def color_fraction_heuristic(grid, grid_size):
     heuristic = sum(color_fractions)
     return heuristic
 
-def bronson_distance_heuristic(grid, grid_size):
+def bronson_distance_heuristic(grid_size, current_color_cells):
     # Busca la celda más alejada
     max_distance = 0
     farthest_cell = None
     for i in range(grid_size):
         for j in range(grid_size):
-            if grid[i][j] is None:
-                distance = min(i, j, grid_size-i-1, grid_size-j-1)
+            if not (i,j) in current_color_cells:
+                distance = min(i, j, grid_size-1, grid_size-1)
                 if distance > max_distance:
                     max_distance = distance
                     farthest_cell = (i, j)
     if farthest_cell is None:
         return 0  # Ya se terminó el juego
-
+    
     # Crea un grafo de las celdas no controladas
     graph = {}
     for i in range(grid_size):
         for j in range(grid_size):
-            if grid[i][j] is None:
+            if not (i,j) in current_color_cells:
                 neighbors = []
-                if i > 0 and grid[i-1][j] is None:
+                if i > 0:
                     neighbors.append(((i-1, j), 1))
-                if i < grid_size-1 and grid[i+1][j] is None:
+                if i < grid_size-1:
                     neighbors.append(((i+1, j), 1))
-                if j > 0 and grid[i][j-1] is None:
+                if j > 0:
                     neighbors.append(((i, j-1), 1))
-                if j < grid_size-1 and grid[i][j+1] is None:
+                if j < grid_size-1:
                     neighbors.append(((i, j+1), 1))
                 graph[(i, j)] = neighbors
+            else:
+                graph[(i, j)] = []
 
     # Utiliza Dijkstra para encontrar la distancia mínima entre cada celda y la celda más alejada del borde
     distances = {cell: sys.maxsize for cell in graph.keys()}
@@ -311,4 +320,4 @@ if __name__ == "__main__":
     solver.uninformed_method(bfs, grid_size, grid, color_amount, turns, input_file)
 
     solver.informed_method('greedy', grid_size, grid, color_amount, turns, remaining_colors_heuristic, input_file)
-    solver.informed_method('a_star', grid_size, grid, color_amount, turns, color_fraction_heuristic, input_file)
+    solver.informed_method('a_star', grid_size, grid, color_amount, turns, bronson_distance_heuristic, input_file)
