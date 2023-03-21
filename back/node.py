@@ -9,3 +9,6 @@ class Node:
     
     def get_state(self):
         return self.state
+    
+    def get_current_cost(self):
+        return len(self.parent)
