@@ -158,7 +158,7 @@ class Solver:
         end_time = time.time()
 
 
-        algorithm = algorithm.name
+        algorithm = 'Greedy'
         self.print_game_statistics('Greedy', result, cost, self.num_explored, len(frontier.frontier), actions, end_time - start_time, heuristic)
         grid[0][0] = starting_color
         if not input_file is None:
@@ -173,7 +173,7 @@ class Solver:
         cost = None
 
         starting_color = grid[0][0]         # Saving it bc algotirhm overrides it
-        
+
         start_time = time.time()
 
         initial_state = FillZone(grid_size, grid, color_amount, turns)
@@ -220,8 +220,8 @@ class Solver:
                         frontier.add((child, child.get_current_cost() + heuristic(child.state.grid, grid_size)))
         end_time = time.time()
 
-        algorithm = algorithm.name
-        self.print_game_statistics('A*', result, cost, self.num_explored, len(frontier.frontier), actions, end_time - start_time, heuristic) 
+        algorithm = 'A_star'
+        self.print_game_statistics('A_star', result, cost, self.num_explored, len(frontier.frontier), actions, end_time - start_time, heuristic) 
         grid[0][0] = starting_color
         if not input_file is None:
             parser.generate_solution_file(algorithm, grid, input_file, actions)
@@ -355,8 +355,6 @@ if __name__ == "__main__":
     solver = Solver()
     dfs = DeepFirstSearch()
     bfs = BreadthFirstSearch()
-
-    print_grid(grid)
 
     print_grid(grid)
 
