@@ -48,8 +48,9 @@ class Solver:
         start_time = time.time()
 
         starting_color = grid[0][0]         # Saving it bc algotirhm overrides it
-
         initial_state = FillZone(grid_size, grid, color_amount, turns)
+        starting_zone = initial_state.current_color_cells
+
         start = Node(state=initial_state, parent=None, action=None)
         frontier = algorithm
         frontier.add(start)
@@ -96,7 +97,9 @@ class Solver:
 
         algorithm = algorithm.name
         self.print_game_statistics(algorithm, result, cost, self.num_explored, len(frontier.frontier), actions, end_time - start_time)
-        grid[0][0] = starting_color
+        for cell in starting_zone:
+            grid[cell[0]][cell[1]] = starting_color
+        print(grid)
         if not input_file is None:
             parser.generate_solution_file(algorithm, grid, input_file, actions)
         else:
@@ -114,6 +117,8 @@ class Solver:
         start_time = time.time()
 
         initial_state = FillZone(grid_size, grid, color_amount, turns)
+        starting_zone = initial_state.current_color_cells
+
         start = Node(state=initial_state, parent=None, action=None)
         frontier = PriorityQueue()
         if heuristic.__name__ == 'remaining_colors_heuristic':
@@ -160,7 +165,10 @@ class Solver:
 
         algorithm = 'Greedy'
         self.print_game_statistics('Greedy', result, cost, self.num_explored, len(frontier.frontier), actions, end_time - start_time, heuristic)
-        grid[0][0] = starting_color
+        
+        for cell in starting_zone:
+            grid[cell[0]][cell[1]] = starting_color
+        
         if not input_file is None:
             parser.generate_solution_file(algorithm, grid, input_file, actions)
         else:
@@ -171,12 +179,13 @@ class Solver:
         actions = []
         result = 'LOSS'
         cost = None
-
-        starting_color = grid[0][0]         # Saving it bc algotirhm overrides it
-
+        
         start_time = time.time()
 
+        starting_color = grid[0][0]         # Saving it bc algotirhm overrides it
         initial_state = FillZone(grid_size, grid, color_amount, turns)
+        starting_zone = initial_state.current_color_cells
+
         start = Node(state=initial_state, parent=None, action=None)
         frontier = PriorityQueue()
         if heuristic.__name__ == 'remaining_colors_heuristic':
@@ -222,7 +231,8 @@ class Solver:
 
         algorithm = 'A_star'
         self.print_game_statistics('A_star', result, cost, self.num_explored, len(frontier.frontier), actions, end_time - start_time, heuristic) 
-        grid[0][0] = starting_color
+        for cell in starting_zone:
+            grid[cell[0]][cell[1]] = starting_color
         if not input_file is None:
             parser.generate_solution_file(algorithm, grid, input_file, actions)
         else:
@@ -307,7 +317,7 @@ def generate_random_grid(grid_size: int, color_amount: int):
     for i in range(grid_size):
         row = []
         for j in range(grid_size):
-            row.append(Color(random.randint(0, color_amount - 1)))
+            row.append(random.randint(0, color_amount - 1))
         grid.append(row)
     return grid
 
@@ -356,7 +366,7 @@ if __name__ == "__main__":
     dfs = DeepFirstSearch()
     bfs = BreadthFirstSearch()
 
-    print_grid(grid)
+    # print_grid(grid)
 
     solver.uninformed_method(dfs, grid_size, grid, color_amount, turns, input_file)
     solver.uninformed_method(bfs, grid_size, grid, color_amount, turns, input_file)

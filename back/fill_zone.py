@@ -31,6 +31,7 @@ class FillZone:
         self.__frontier_queue = deque()
         self.turns = turns
         self.game_colors = [e for e in Color]
+        self.current_color_cells = [(0, 0)]
 
         self.remaining_cells = grid_size * grid_size - 1            # Initial cell is always colored
         self.game_status = GameStatus.CONTINUES
@@ -97,18 +98,22 @@ class FillZone:
         # Calculate if expansion is needed and do recursively
         if x+1 < self.__grid_size and self.current_color == self.grid[x+1][y] and dir_from != Direction.BOTTOM:
             self.grid[x+1][y] = GameColor.CURRENT
+            self.current_color_cells.append((x+1, y))
             self.remaining_cells = self.remaining_cells - 1
             self.__expand_frontier(x+1, y, Direction.TOP)
         if x>0 and self.current_color == self.grid[x-1][y] and dir_from != Direction.TOP:
             self.grid[x-1][y] = GameColor.CURRENT
+            self.current_color_cells.append((x-1, y))
             self.remaining_cells = self.remaining_cells - 1
             self.__expand_frontier(x-1, y, Direction.BOTTOM)
         if y+1 < self.__grid_size and self.current_color == self.grid[x][y+1] and dir_from != Direction.RIGHT:
             self.grid[x][y+1] = GameColor.CURRENT
+            self.current_color_cells.append((x, y+1))
             self.remaining_cells = self.remaining_cells - 1
             self.__expand_frontier(x, y+1, Direction.LEFT)
         if y>0 and self.current_color == self.grid[x][y-1] and dir_from != Direction.LEFT:
             # raise Exception('current is {} and prev is {}'.format(self.current_color, self.grid[x][y-1]))
+            self.current_color_cells.append((x, y-1))
             self.grid[x][y-1] = GameColor.CURRENT
             self.remaining_cells = self.remaining_cells - 1
             self.__expand_frontier(x, y-1, Direction.RIGHT)

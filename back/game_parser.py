@@ -50,7 +50,7 @@ class Parser():
         if input_file is None:
             name = 'solutions/{}-sol-{}x{}.txt'.format(algorithm, len(grid), len(grid))
         else:
-            name = 'solutions/{}-sol-{}'.format(algorithm, input_file.split('\\')[-1])
+            name = 'solutions/{}-sol-{}'.format(algorithm, input_file.split('/')[-1].split('\\')[-1])
         with open(name, 'w') as file:
             original_stdout = sys.stdout
             sys.stdout = file
