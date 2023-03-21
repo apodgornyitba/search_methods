@@ -1,0 +1,540 @@
+Algorithm BFS
+Result WIN
+Cost 5
+Expanded Nodes 104
+Frontier Nodes 42
+Time elapsed 0.034030914306640625
+Algorithm DFS
+Result WIN
+Cost 6
+Expanded Nodes 15
+Frontier Nodes 16
+Time elapsed 0.004003763198852539
+Algorithm BFS
+Result WIN
+Cost 6
+Expanded Nodes 103
+Frontier Nodes 20
+Time elapsed 0.032028913497924805
+Algorithm DFS
+Result WIN
+Cost 6
+Expanded Nodes 19
+Frontier Nodes 12
+Time elapsed 0.0050048828125
+Algorithm BFS
+Result WIN
+Cost 4
+Expanded Nodes 51
+Frontier Nodes 27
+Time elapsed 0.015013456344604492
+Algorithm DFS
+Result WIN
+Cost 4
+Expanded Nodes 12
+Frontier Nodes 9
+Time elapsed 0.003002643585205078
+Algorithm BFS
+Result WIN
+Cost 4
+Expanded Nodes 45
+Frontier Nodes 23
+Time elapsed 0.012010574340820312
+Algorithm DFS
+Result WIN
+Cost 5
+Expanded Nodes 11
+Frontier Nodes 15
+Time elapsed 0.002001523971557617
+Algorithm BFS
+Result WIN
+Cost 6
+Expanded Nodes 189
+Frontier Nodes 31
+Time elapsed 0.06605982780456543
+Algorithm DFS
+Result WIN
+Cost 6
+Expanded Nodes 16
+Frontier Nodes 15
+Time elapsed 0.004004001617431641
+Algorithm BFS
+Result WIN
+Cost 5
+Expanded Nodes 48
+Frontier Nodes 11
+Time elapsed 0.013011932373046875
+Algorithm DFS
+Result WIN
+Cost 5
+Expanded Nodes 12
+Frontier Nodes 14
+Time elapsed 0.0030028820037841797
+Algorithm BFS
+Result WIN
+Cost 5
+Expanded Nodes 91
+Frontier Nodes 42
+Time elapsed 0.030026674270629883
+Algorithm DFS
+Result WIN
+Cost 7
+Expanded Nodes 25
+Frontier Nodes 11
+Time elapsed 0.00700688362121582
+Algorithm BFS
+Result WIN
+Cost 4
+Expanded Nodes 75
+Frontier Nodes 33
+Time elapsed 0.023020267486572266
+Algorithm DFS
+Result WIN
+Cost 5
+Expanded Nodes 11
+Frontier Nodes 15
+Time elapsed 0.003002643585205078
+Algorithm BFS
+Result WIN
+Cost 4
+Expanded Nodes 56
+Frontier Nodes 22
+Time elapsed 0.017016172409057617
+Algorithm DFS
+Result WIN
+Cost 5
+Expanded Nodes 12
+Frontier Nodes 14
+Time elapsed 0.003002643585205078
+Algorithm BFS
+Result WIN
+Cost 3
+Expanded Nodes 30
+Frontier Nodes 9
+Time elapsed 0.008007526397705078
+Algorithm DFS
+Result WIN
+Cost 3
+Expanded Nodes 7
+Frontier Nodes 9
+Time elapsed 0.001001119613647461
+Algorithm greedy
+Result WIN
+Cost 5
+Expanded Nodes 6
+Frontier Nodes 20
+Time elapsed 0.002001523971557617
+Heuristic remaining_colors_heuristic
+Algorithm astar
+Result WIN
+Cost 5
+Expanded Nodes 6
+Frontier Nodes 20
+Time elapsed 0.0020017623901367188
+Heuristic remaining_colors_heuristic
+Algorithm greedy
+Result WIN
+Cost 5
+Expanded Nodes 6
+Frontier Nodes 20
+Time elapsed 0.0020017623901367188
+Heuristic remaining_colors_heuristic
+Algorithm astar
+Result WIN
+Cost 5
+Expanded Nodes 6
+Frontier Nodes 20
+Time elapsed 0.001001119613647461
+Heuristic remaining_colors_heuristic
+Algorithm greedy
+Result WIN
+Cost 5
+Expanded Nodes 6
+Frontier Nodes 20
+Time elapsed 0.002001523971557617
+Heuristic remaining_colors_heuristic
+Algorithm astar
+Result WIN
+Cost 5
+Expanded Nodes 6
+Frontier Nodes 20
+Time elapsed 0.0020020008087158203
+Heuristic remaining_colors_heuristic
+Algorithm greedy
+Result WIN
+Cost 6
+Expanded Nodes 10
+Frontier Nodes 21
+Time elapsed 0.0020020008087158203
+Heuristic remaining_colors_heuristic
+Algorithm astar
+Result WIN
+Cost 6
+Expanded Nodes 10
+Frontier Nodes 21
+Time elapsed 0.0020017623901367188
+Heuristic remaining_colors_heuristic
+Algorithm greedy
+Result WIN
+Cost 6
+Expanded Nodes 11
+Frontier Nodes 25
+Time elapsed 0.0030024051666259766
+Heuristic remaining_colors_heuristic
+Algorithm astar
+Result WIN
+Cost 6
+Expanded Nodes 11
+Frontier Nodes 25
+Time elapsed 0.0020020008087158203
+Heuristic remaining_colors_heuristic
+Algorithm greedy
+Result WIN
+Cost 4
+Expanded Nodes 5
+Frontier Nodes 16
+Time elapsed 0.002001523971557617
+Heuristic remaining_colors_heuristic
+Algorithm astar
+Result WIN
+Cost 4
+Expanded Nodes 5
+Frontier Nodes 16
+Time elapsed 0.001001119613647461
+Heuristic remaining_colors_heuristic
+Algorithm greedy
+Result WIN
+Cost 5
+Expanded Nodes 6
+Frontier Nodes 20
+Time elapsed 0.0010006427764892578
+Heuristic remaining_colors_heuristic
+Algorithm astar
+Result WIN
+Cost 5
+Expanded Nodes 6
+Frontier Nodes 20
+Time elapsed 0.0010013580322265625
+Heuristic remaining_colors_heuristic
+Algorithm greedy
+Result WIN
+Cost 6
+Expanded Nodes 8
+Frontier Nodes 23
+Time elapsed 0.002001523971557617
+Heuristic remaining_colors_heuristic
+Algorithm astar
+Result WIN
+Cost 6
+Expanded Nodes 8
+Frontier Nodes 23
+Time elapsed 0.0020020008087158203
+Heuristic remaining_colors_heuristic
+Algorithm greedy
+Result WIN
+Cost 6
+Expanded Nodes 8
+Frontier Nodes 23
+Time elapsed 0.002001523971557617
+Heuristic remaining_colors_heuristic
+Algorithm astar
+Result WIN
+Cost 6
+Expanded Nodes 8
+Frontier Nodes 23
+Time elapsed 0.0020020008087158203
+Heuristic remaining_colors_heuristic
+Algorithm greedy
+Result WIN
+Cost 4
+Expanded Nodes 5
+Frontier Nodes 16
+Time elapsed 0.0020017623901367188
+Heuristic remaining_colors_heuristic
+Algorithm astar
+Result WIN
+Cost 4
+Expanded Nodes 5
+Frontier Nodes 16
+Time elapsed 0.001001119613647461
+Heuristic remaining_colors_heuristic
+Algorithm greedy
+Result WIN
+Cost 6
+Expanded Nodes 89
+Frontier Nodes 47
+Time elapsed 0.029026269912719727
+Heuristic color_fraction_heuristic
+Algorithm astar
+Result WIN
+Cost 5
+Expanded Nodes 113
+Frontier Nodes 55
+Time elapsed 0.03903555870056152
+Heuristic color_fraction_heuristic
+Algorithm greedy
+Result WIN
+Cost 5
+Expanded Nodes 56
+Frontier Nodes 9
+Time elapsed 0.017015457153320312
+Heuristic color_fraction_heuristic
+Algorithm astar
+Result WIN
+Cost 5
+Expanded Nodes 56
+Frontier Nodes 9
+Time elapsed 0.01601433753967285
+Heuristic color_fraction_heuristic
+Algorithm greedy
+Result WIN
+Cost 6
+Expanded Nodes 66
+Frontier Nodes 18
+Time elapsed 0.02001810073852539
+Heuristic color_fraction_heuristic
+Algorithm astar
+Result WIN
+Cost 6
+Expanded Nodes 108
+Frontier Nodes 14
+Time elapsed 0.033030033111572266
+Heuristic color_fraction_heuristic
+Algorithm greedy
+Result WIN
+Cost 4
+Expanded Nodes 51
+Frontier Nodes 41
+Time elapsed 0.01801609992980957
+Heuristic color_fraction_heuristic
+Algorithm astar
+Result WIN
+Cost 4
+Expanded Nodes 69
+Frontier Nodes 32
+Time elapsed 0.02402210235595703
+Heuristic color_fraction_heuristic
+Algorithm greedy
+Result WIN
+Cost 6
+Expanded Nodes 108
+Frontier Nodes 28
+Time elapsed 0.03403115272521973
+Heuristic color_fraction_heuristic
+Algorithm astar
+Result WIN
+Cost 6
+Expanded Nodes 176
+Frontier Nodes 19
+Time elapsed 0.05905318260192871
+Heuristic color_fraction_heuristic
+Algorithm greedy
+Result WIN
+Cost 5
+Expanded Nodes 64
+Frontier Nodes 20
+Time elapsed 0.01901721954345703
+Heuristic color_fraction_heuristic
+Algorithm astar
+Result WIN
+Cost 5
+Expanded Nodes 76
+Frontier Nodes 20
+Time elapsed 0.023021459579467773
+Heuristic color_fraction_heuristic
+Algorithm greedy
+Result WIN
+Cost 5
+Expanded Nodes 55
+Frontier Nodes 29
+Time elapsed 0.01701521873474121
+Heuristic color_fraction_heuristic
+Algorithm astar
+Result WIN
+Cost 4
+Expanded Nodes 63
+Frontier Nodes 29
+Time elapsed 0.019017696380615234
+Heuristic color_fraction_heuristic
+Algorithm greedy
+Result WIN
+Cost 4
+Expanded Nodes 32
+Frontier Nodes 11
+Time elapsed 0.009008169174194336
+Heuristic color_fraction_heuristic
+Algorithm astar
+Result WIN
+Cost 4
+Expanded Nodes 38
+Frontier Nodes 24
+Time elapsed 0.011009931564331055
+Heuristic color_fraction_heuristic
+Algorithm greedy
+Result WIN
+Cost 4
+Expanded Nodes 40
+Frontier Nodes 16
+Time elapsed 0.011009931564331055
+Heuristic color_fraction_heuristic
+Algorithm astar
+Result WIN
+Cost 4
+Expanded Nodes 40
+Frontier Nodes 16
+Time elapsed 0.011009454727172852
+Heuristic color_fraction_heuristic
+Algorithm greedy
+Result WIN
+Cost 4
+Expanded Nodes 40
+Frontier Nodes 11
+Time elapsed 0.011009931564331055
+Heuristic color_fraction_heuristic
+Algorithm astar
+Result WIN
+Cost 4
+Expanded Nodes 40
+Frontier Nodes 11
+Time elapsed 0.011009931564331055
+Heuristic color_fraction_heuristic
+Algorithm greedy
+Result WIN
+Cost 5
+Expanded Nodes 52
+Frontier Nodes 21
+Time elapsed 0.016014575958251953
+Heuristic bronson_distance_heuristic
+Algorithm astar
+Result WIN
+Cost 5
+Expanded Nodes 52
+Frontier Nodes 21
+Time elapsed 0.01601433753967285
+Heuristic bronson_distance_heuristic
+Algorithm greedy
+Result WIN
+Cost 4
+Expanded Nodes 45
+Frontier Nodes 17
+Time elapsed 0.016014575958251953
+Heuristic bronson_distance_heuristic
+Algorithm astar
+Result WIN
+Cost 4
+Expanded Nodes 45
+Frontier Nodes 17
+Time elapsed 0.01601433753967285
+Heuristic bronson_distance_heuristic
+Algorithm greedy
+Result WIN
+Cost 6
+Expanded Nodes 68
+Frontier Nodes 24
+Time elapsed 0.02101922035217285
+Heuristic bronson_distance_heuristic
+Algorithm astar
+Result WIN
+Cost 6
+Expanded Nodes 68
+Frontier Nodes 24
+Time elapsed 0.020018577575683594
+Heuristic bronson_distance_heuristic
+Algorithm greedy
+Result WIN
+Cost 6
+Expanded Nodes 88
+Frontier Nodes 18
+Time elapsed 0.0320286750793457
+Heuristic bronson_distance_heuristic
+Algorithm astar
+Result WIN
+Cost 6
+Expanded Nodes 88
+Frontier Nodes 18
+Time elapsed 0.03102850914001465
+Heuristic bronson_distance_heuristic
+Algorithm greedy
+Result WIN
+Cost 5
+Expanded Nodes 45
+Frontier Nodes 18
+Time elapsed 0.014012575149536133
+Heuristic bronson_distance_heuristic
+Algorithm astar
+Result WIN
+Cost 5
+Expanded Nodes 45
+Frontier Nodes 18
+Time elapsed 0.014012575149536133
+Heuristic bronson_distance_heuristic
+Algorithm greedy
+Result WIN
+Cost 4
+Expanded Nodes 24
+Frontier Nodes 10
+Time elapsed 0.006005287170410156
+Heuristic bronson_distance_heuristic
+Algorithm astar
+Result WIN
+Cost 4
+Expanded Nodes 24
+Frontier Nodes 10
+Time elapsed 0.007006406784057617
+Heuristic bronson_distance_heuristic
+Algorithm greedy
+Result WIN
+Cost 6
+Expanded Nodes 83
+Frontier Nodes 19
+Time elapsed 0.028024911880493164
+Heuristic bronson_distance_heuristic
+Algorithm astar
+Result WIN
+Cost 6
+Expanded Nodes 83
+Frontier Nodes 19
+Time elapsed 0.027024030685424805
+Heuristic bronson_distance_heuristic
+Algorithm greedy
+Result WIN
+Cost 6
+Expanded Nodes 67
+Frontier Nodes 10
+Time elapsed 0.02101922035217285
+Heuristic bronson_distance_heuristic
+Algorithm astar
+Result WIN
+Cost 6
+Expanded Nodes 67
+Frontier Nodes 10
+Time elapsed 0.020018577575683594
+Heuristic bronson_distance_heuristic
+Algorithm greedy
+Result WIN
+Cost 5
+Expanded Nodes 43
+Frontier Nodes 20
+Time elapsed 0.013011455535888672
+Heuristic bronson_distance_heuristic
+Algorithm astar
+Result WIN
+Cost 5
+Expanded Nodes 43
+Frontier Nodes 20
+Time elapsed 0.013011932373046875
+Heuristic bronson_distance_heuristic
+Algorithm greedy
+Result WIN
+Cost 6
+Expanded Nodes 128
+Frontier Nodes 61
+Time elapsed 0.04804372787475586
+Heuristic bronson_distance_heuristic
+Algorithm astar
+Result WIN
+Cost 6
+Expanded Nodes 128
+Frontier Nodes 61
+Time elapsed 0.04804348945617676
+Heuristic bronson_distance_heuristic

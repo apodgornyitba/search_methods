@@ -1,14 +1,13 @@
 import heapq
 from node import Node
-from frontier import DeepFirstSearch, BreadthFirstSearch, PriorityQueue
+from frontier import PriorityQueue
 from fill_zone import FillZone, GameStatus
-from gamecolor import Color, HexColor
-from game_parser import Parser
+from gamecolor import Color
 
 import copy
 import time
 import sys
-import random
+import os
 
 class Solver:
     def __init__(self):
@@ -36,11 +35,13 @@ class Solver:
         print('- Time elapsed: {}'.format(time_elapsed))
         if heuristic is not None:
             print('- Heuristic: {}'.format(heuristic))
-        print()
+        print('\n')
 
 
-    def to_file(self, algorithm: str, result: str, cost: int, expanded_nodes: int, frontier_nodes: int, time_elapsed, heuristic=None):
-        with open('output.txt', 'a') as f:
+    def to_file(self, algorithm: str, grid_size: int, result: str, cost: int, expanded_nodes: int, frontier_nodes: int, time_elapsed, heuristic=None):
+        if not os.path.exists('results'):
+            os.makedirs('results')
+        with open('results/output{}.txt'.format(grid_size), 'a') as f:
             f.write('Algorithm {}\n'.format(algorithm))
             f.write('Result {}\n'.format(result))
             f.write('Cost {}\n'.format(cost))
@@ -107,7 +108,7 @@ class Solver:
         end_time = time.time()
 
         algorithm = algorithm.name
-        self.to_file(algorithm, result, cost, self.num_explored, len(frontier.frontier), end_time - start_time)
+        self.to_file(algorithm, len(grid), result, cost, self.num_explored, len(frontier.frontier), end_time - start_time)
         for cell in starting_zone:
             grid[cell[0]][cell[1]] = starting_color
 
@@ -180,7 +181,7 @@ class Solver:
                             frontier.add((child, child.get_current_cost() + globals()[heuristic](grid_size, child.state.current_color_cells)))
                             
         end_time = time.time()
-        self.to_file(algorithm, result, cost, self.num_explored, len(frontier.frontier), end_time - start_time, heuristic)
+        self.to_file(algorithm, len(grid), result, cost, self.num_explored, len(frontier.frontier), end_time - start_time, heuristic)
         for cell in starting_zone:
             grid[cell[0]][cell[1]] = starting_color
 
