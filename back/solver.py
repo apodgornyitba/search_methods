@@ -2,8 +2,8 @@ import heapq
 from node import Node
 from frontier import DeepFirstSearch, BreadthFirstSearch, PriorityQueue
 from fill_zone import FillZone, GameStatus
-from gamecolor import Color
-from parserInput import Parser
+from gamecolor import Color, HexColor
+from game_parser import Parser
 
 import copy
 import time
@@ -39,13 +39,15 @@ class Solver:
         print()
 
 
-    def uninformed_method(self, algorithm, grid_size: int, grid, color_amount: int, turns: int):
+    def uninformed_method(self, algorithm, grid_size: int, grid, color_amount: int, turns: int, input_file: str = None):
         self.num_explored = 0
         actions = []
         result = 'LOSS'
         cost = None
 
         start_time = time.time()
+
+        starting_color = grid[0][0]         # Saving it bc algotirhm overrides it
 
         initial_state = FillZone(grid_size, grid, color_amount, turns)
         start = Node(state=initial_state, parent=None, action=None)
@@ -94,13 +96,20 @@ class Solver:
 
         algorithm = algorithm.name
         self.print_game_statistics(algorithm, result, cost, self.num_explored, len(frontier.frontier), actions, end_time - start_time)
+        grid[0][0] = starting_color
+        if not input_file is None:
+            parser.generate_solution_file(algorithm, grid, input_file, actions)
+        else:
+            parser.generate_solution_file(algorithm=algorithm, input_file = None, grid= grid,solution= actions)
         
 
-    def greedy(self, grid_size: int, grid, color_amount: int, turns: int, heuristic):
+    def greedy(self, grid_size: int, grid, color_amount: int, turns: int, heuristic, input_file: str = None):
         self.num_explored = 0
         actions = []
         result = 'LOSS'
         cost = None
+
+        starting_color = grid[0][0]         # Saving it bc algotirhm overrides it
 
         start_time = time.time()
 
@@ -148,14 +157,23 @@ class Solver:
                         frontier.add((child, heuristic(child.state.grid, grid_size)))
         end_time = time.time()
 
-        self.print_game_statistics('Greedy', result, cost, self.num_explored, len(frontier.frontier), actions, end_time - start_time, heuristic)
 
-    def a_search(self, grid_size: int, grid, color_amount: int, turns: int, heuristic):
+        algorithm = algorithm.name
+        self.print_game_statistics('Greedy', result, cost, self.num_explored, len(frontier.frontier), actions, end_time - start_time, heuristic)
+        grid[0][0] = starting_color
+        if not input_file is None:
+            parser.generate_solution_file(algorithm, grid, input_file, actions)
+        else:
+            parser.generate_solution_file(algorithm=algorithm, input_file = None, grid= grid,solution= actions)
+
+    def a_search(self, grid_size: int, grid, color_amount: int, turns: int, heuristic, input_file: str = None):
         self.num_explored = 0
         actions = []
         result = 'LOSS'
         cost = None
 
+        starting_color = grid[0][0]         # Saving it bc algotirhm overrides it
+        
         start_time = time.time()
 
         initial_state = FillZone(grid_size, grid, color_amount, turns)
@@ -202,7 +220,13 @@ class Solver:
                         frontier.add((child, child.get_current_cost() + heuristic(child.state.grid, grid_size)))
         end_time = time.time()
 
+        algorithm = algorithm.name
         self.print_game_statistics('A*', result, cost, self.num_explored, len(frontier.frontier), actions, end_time - start_time, heuristic) 
+        grid[0][0] = starting_color
+        if not input_file is None:
+            parser.generate_solution_file(algorithm, grid, input_file, actions)
+        else:
+            parser.generate_solution_file(algorithm=algorithm, input_file = None, grid= grid,solution= actions)
 
 
 
@@ -299,6 +323,7 @@ def print_grid(grid):
 if __name__ == "__main__":
     n = len(sys.argv)
     turns = 30
+    input_file = None
     
     if n > 5:
         raise Exception('Only Grid size and optionally turns must be provided as argument')
@@ -324,6 +349,7 @@ if __name__ == "__main__":
                 raise Exception('Invalid turn amount')
             (color_amount, grid) = Parser.parse_color_file(sys.argv[1])
             grid_size = len(grid)
+            input_file = sys.argv[1]
             turns = int(sys.argv[2])
 
     solver = Solver()
@@ -332,8 +358,10 @@ if __name__ == "__main__":
 
     print_grid(grid)
 
-    solver.uninformed_method(dfs, grid_size, grid, color_amount, turns)
-    solver.uninformed_method(bfs, grid_size, grid, color_amount, turns)
+    print_grid(grid)
 
-    solver.greedy(grid_size, grid, color_amount, turns, remaining_colors_heuristic)
-    solver.a_search(grid_size, grid, color_amount, turns, bronson_distance_heuristic)
+    solver.uninformed_method(dfs, grid_size, grid, color_amount, turns, input_file)
+    solver.uninformed_method(bfs, grid_size, grid, color_amount, turns, input_file)
+
+    solver.greedy(grid_size, grid, color_amount, turns, remaining_colors_heuristic, input_file)
+    solver.a_search(grid_size, grid, color_amount, turns, bronson_distance_heuristic, input_file)
