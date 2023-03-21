@@ -2,8 +2,6 @@ from pydoc import doc
 from gamecolor import Color, HexColor
 import sys
 import os
-
-
 class Parser():
 
     def __init__(self):

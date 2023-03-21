@@ -39,6 +39,18 @@ class Solver:
         print()
 
 
+    def to_file(self, algorithm: str, result: str, cost: int, expanded_nodes: int, frontier_nodes: int, solution, time_elapsed, heuristic=None):
+        with open('output.txt', 'a') as f:
+            f.write('Algorithm {}\n'.format(algorithm))
+            f.write('Result {}\n'.format(result))
+            f.write('Cost {}\n'.format(cost))
+            f.write('Expanded Nodes {}\n'.format(expanded_nodes))
+            f.write('Frontier Nodes {}\n'.format(frontier_nodes))
+            f.write('Time elapsed {}\n'.format(time_elapsed))
+            if heuristic is not None:
+                f.write('- Heuristic {}\n'.format(heuristic))
+            f.write()
+
     def uninformed_method(self, algorithm, grid_size: int, grid, color_amount: int, turns: int, input_file: str = None):
         self.num_explored = 0
         actions = []
@@ -96,7 +108,7 @@ class Solver:
         end_time = time.time()
 
         algorithm = algorithm.name
-        self.print_game_statistics(algorithm, result, cost, self.num_explored, len(frontier.frontier), actions, end_time - start_time)
+        self.to_file(algorithm, result, cost, self.num_explored, len(frontier.frontier), actions, end_time - start_time)
         for cell in starting_zone:
             grid[cell[0]][cell[1]] = starting_color
 
@@ -169,7 +181,7 @@ class Solver:
                             frontier.add((child, child.get_current_cost() + globals()[heuristic](grid_size, child.state.current_color_cells)))
                             
         end_time = time.time()
-        self.print_game_statistics(algorithm, result, cost, self.num_explored, len(frontier.frontier), actions, end_time - start_time, heuristic)
+        self.to_file(algorithm, result, cost, self.num_explored, len(frontier.frontier), actions, end_time - start_time, heuristic)
         for cell in starting_zone:
             grid[cell[0]][cell[1]] = starting_color
 
