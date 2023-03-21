@@ -3,6 +3,7 @@ class DeepFirstSearch():
 
     def __init__(self):
         self.frontier = []
+        self.name = 'DFS'
 
     def add(self, node):
         self.frontier.append(node)
@@ -24,6 +25,10 @@ class DeepFirstSearch():
 
 # Used to implement breadth-first search
 class BreadthFirstSearch(DeepFirstSearch):
+
+    def __init__(self):
+        super().__init__()
+        self.name = 'BFS'
 
     def remove(self):
         if self.empty():
