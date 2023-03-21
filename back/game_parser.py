@@ -1,6 +1,7 @@
 from pydoc import doc
 from gamecolor import Color, HexColor
 import sys
+import os
 
 
 class Parser():
@@ -48,16 +49,26 @@ class Parser():
     @staticmethod
     def generate_solution_file(algorithm: str, grid, input_file: str, solution):
         if input_file is None:
-            name = 'solutions/{}-sol-{}x{}.txt'.format(algorithm, len(grid), len(grid))
+            filename = '{}-sol-{}x{}.txt'.format(algorithm, len(grid), len(grid))
         else:
-            name = 'solutions/{}-sol-{}'.format(algorithm, input_file.split('/')[-1].split('\\')[-1])
-        with open(name, 'w') as file:
-            original_stdout = sys.stdout
-            sys.stdout = file
+            # Split the input file path into its directory and filename components
+            _, input_file_name = os.path.split(input_file)
+            # Extract the filename without the extension
+            input_file_basename = os.path.splitext(input_file_name)[0]
+            # Construct the output file name using the correct path separator
+            filename = '{}-sol-{}.txt'.format(algorithm, input_file_basename)
+        
+        # Define the directory path and file name
+        directory = 'solutions'
+
+        # Create the directory if it doesn't exist
+        if not os.path.exists(directory):
+            os.makedirs(directory)
+
+        with open(os.path.join(directory, filename), 'w') as file:
             for i in range(len(grid)):
                 for j in range(len(grid)):
-                    print(Color(grid[i][j]).name, end=" ")
-                print()
+                    file.write(Color(grid[i][j]).name + " ")
+                file.write("\n")
             for action in solution:
-                print(action)
-            sys.stdout = original_stdout
+                file.write(str(action) + "\n")
