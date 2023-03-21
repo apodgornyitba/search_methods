@@ -1,3 +1,4 @@
+from queue import PriorityQueue
 from node import Node
 from frontier import DeepFirstSearch, BreadthFirstSearch
 from fill_zone import FillZone, GameStatus
@@ -93,27 +94,53 @@ class Solver:
         if isinstance(algorithm, BreadthFirstSearch):
             algorithm = 'BFS' 
         self.print_game_statistics(algorithm, result, cost, self.num_explored, len(frontier.frontier), actions, end_time - start_time)
+    
+    def greedy(self, grid_size: int, grid, color_amount: int, turns: int, heuristic):
+        self.num_explored = 0
+        actions = []
+        result = 'LOSS'
+        cost = None
 
-if __name__ == "__main__":
-    n = len(sys.argv)
-    turns = 30
-    if n < 2 or n > 3:
-        raise Exception('Only Grid size and optionally turns must be provided as argument')
-    if n == 3:
-        turns = int(sys.argv[2])
+        start_time = time.time()
 
-    parser = Parser()
-    (color_amount, grid) = Parser.parse_color_file(sys.argv[1])
-    grid_size = len(grid)
+        initial_state = FillZone(grid_size, grid, color_amount, turns)
+        start = Node(state=initial_state, parent=None, action=None)
+        frontier = PriorityQueue()
+        frontier.add(start, heuristic(start.state.grid, grid_size))
+        # Initialize an empty explored set
+        self.explored = set()
+        while True:
+            if (len(frontier) == 0):
+                break
+            n = frontier.get()
+            self.num_explored += 1
 
-    solver = Solver()
-    dfs = DeepFirstSearch()
-    bfs = BreadthFirstSearch()
+            # If node is the goal, then we have a solution
+            if n.state.game_status == GameStatus.WIN:
+                result = 'WIN'
+                while n.parent is not None:
+                    actions.append(n.action.name)
+                    n = n.parent
+                actions.reverse()
+                self.solution = actions
+                cost = len(actions)
+                break
 
-    solver.uninformed_method(dfs, grid_size, grid, color_amount, turns)
+            # Mark node as explored
+            self.explored.add(n.state)
 
-    solver.uninformed_method(bfs, grid_size, grid, color_amount, turns)
+            # If game finished, don't expand solution
+            if n.state.game_status == GameStatus.LOSS:
+                continue
 
+            # Add neighbors to frontier
+            for action, state in self.neighbors(n.state):
+                if not frontier.contains_state(state) and state not in self.explored:
+                    child = Node(state=state, parent=n, action=action)
+                    frontier.add(child, heuristic(child.state.grid, grid_size))
+        end_time = time.time()
+
+        self.print_game_statistics('Greedy', result, cost, self.num_explored, len(frontier.frontier), actions, end_time - start_time)
 
 def remaining_colors_heuristic(grid, color_amount):
     colors = set()
@@ -186,3 +213,27 @@ def bronson_distance_heuristic(grid, grid_size):
     # Toma el valor máximo de las distancias encontradas como la heurística
     heuristic = max(distances.values())
     return heuristic
+
+    
+
+if __name__ == "__main__":
+    n = len(sys.argv)
+    turns = 30
+    if n < 2 or n > 3:
+        raise Exception('Only Grid size and optionally turns must be provided as argument')
+    if n == 3:
+        turns = int(sys.argv[2])
+
+    parser = Parser()
+    (color_amount, grid) = Parser.parse_color_file(sys.argv[1])
+    grid_size = len(grid)
+
+    solver = Solver()
+    dfs = DeepFirstSearch()
+    bfs = BreadthFirstSearch()
+
+    solver.uninformed_method(dfs, grid_size, grid, color_amount, turns)
+
+    solver.uninformed_method(bfs, grid_size, grid, color_amount, turns)
+
+    solver.greedy(grid_size, grid, color_amount, turns, remaining_colors_heuristic)
