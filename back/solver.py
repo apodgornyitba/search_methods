@@ -150,6 +150,62 @@ class Solver:
 
         self.print_game_statistics('Greedy', result, cost, self.num_explored, len(frontier.frontier), actions, end_time - start_time, heuristic)
 
+    def a_search(self, grid_size: int, grid, color_amount: int, turns: int, heuristic):
+        self.num_explored = 0
+        actions = []
+        result = 'LOSS'
+        cost = None
+
+        start_time = time.time()
+
+        initial_state = FillZone(grid_size, grid, color_amount, turns)
+        start = Node(state=initial_state, parent=None, action=None)
+        frontier = PriorityQueue()
+        if heuristic.__name__ == 'remaining_colors_heuristic':
+            frontier.add((start, heuristic(start.state.grid, color_amount)))
+        else:
+            frontier.add((start, heuristic(start.state.grid, grid_size)))
+            
+        # Initialize an empty explored set
+        self.explored = set()
+        while True:
+            if frontier.empty():
+                break
+            n = frontier.remove()
+            self.num_explored += 1
+
+            # If node is the goal, then we have a solution
+            if n[0].state.game_status == GameStatus.WIN:
+                result = 'WIN'
+                while n[0].parent is not None:
+                    actions.append(n[0].action.name)
+                    n = n[0].parent
+                actions.reverse()
+                self.solution = actions
+                cost = len(actions)
+                break
+
+            # Mark node as explored
+            self.explored.add(n[0].state)
+
+            # If game finished, don't expand solution
+            if n[0].state.game_status == GameStatus.LOSS:
+                continue
+
+            # Add neighbors to frontier
+            for action, state in self.neighbors(n[0].state):
+                if not frontier.contains_state(state) and state not in self.explored:
+                    child = Node(state=state, parent=n, action=action)
+                    if heuristic.__name__ == 'remaining_colors_heuristic':
+                        frontier.add((child, child.get_current_cost + heuristic(child.state.grid, color_amount)))
+                    else:
+                        frontier.add((child, child.get_current_cost + heuristic(child.state.grid, grid_size)))
+        end_time = time.time()
+
+        self.print_game_statistics('A*', result, cost, self.num_explored, len(frontier.frontier), actions, end_time - start_time, heuristic) 
+
+
+
 def remaining_colors_heuristic(grid, color_amount):
     colors = set()
     for row in grid:
