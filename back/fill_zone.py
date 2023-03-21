@@ -54,7 +54,7 @@ class FillZone:
     # Returns GameStatus after move
     def change_color(self, new_color: Color):
         self.current_color = new_color
-        # print('Changing color to {}'.format(new_color.value))
+        #print('Changing color to {}'.format(new_color.value))
 
         frontier_size = len(self.__frontier_queue)
         for i in range(frontier_size):
@@ -75,7 +75,7 @@ class FillZone:
         # print('Frontier cells: {}'.format(self.__frontier_queue.qsize()))
         #for cell in self.__frontier_queue:
         #    print('- x: {}, y: {}, from: {}'.format(cell.x, cell.y, cell.dir_from.name))
-        # print(self.grid)
+        #print(self.grid)
         return self.game_status
 
     def __is_frontier(self, x: int, y: int):

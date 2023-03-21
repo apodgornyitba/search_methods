@@ -1,6 +1,7 @@
 from pydoc import doc
-from gamecolor import GameColor
+from gamecolor import Color, HexColor
 import sys
+
 
 class Parser():
 
@@ -27,13 +28,27 @@ class Parser():
     @staticmethod
     def parse_solution_file(filename: str):
         with open(filename, 'r') as file:
-            solution = file.readlines()
-            return (len(solution), solution)
+            grid = []
+            solution = []
+            color_amount = set()
+            line = file.readline().split(" ")
+            while len(line) > 1:
+                line = line[:-1]
+                colors = list(map(lambda x: Color.__members__[x].value, line))
+                grid.append(colors)
+                for color in colors:
+                    color_amount.add(color)
+                line = file.readline().split(" ")
+            line = line[0]
+            while line != "":
+                solution.append(line.split('\n')[0])
+                line = file.readline()
+            return (grid, len(color_amount), solution)
 
     @staticmethod
     def generate_solution_file(algorithm: str, grid, input_file: str, solution):
         if input_file is None:
-            name = 'solutions/{}-sol-{}x{}'.format(algorithm, len(grid), len(grid))
+            name = 'solutions/{}-sol-{}x{}.txt'.format(algorithm, len(grid), len(grid))
         else:
             name = 'solutions/{}-sol-{}'.format(algorithm, input_file.split('\\')[-1])
         with open(name, 'w') as file:
@@ -41,7 +56,7 @@ class Parser():
             sys.stdout = file
             for i in range(len(grid)):
                 for j in range(len(grid)):
-                    print(GameColor(grid[i][j]).name, end=" ")
+                    print(Color(grid[i][j]).name, end=" ")
                 print()
             for action in solution:
                 print(action)

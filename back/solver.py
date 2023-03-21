@@ -1,7 +1,7 @@
 from node import Node
 from frontier import DeepFirstSearch, BreadthFirstSearch
 from fill_zone import FillZone, GameStatus
-from gamecolor import Color
+from gamecolor import Color, HexColor
 from parser import Parser
 
 import copy
