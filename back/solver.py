@@ -26,7 +26,7 @@ class Solver:
         
         return candidates
     
-    def print_game_statistics(self, algorithm: str, result: str, cost: int, expanded_nodes: int, frontier_nodes: int, solution, time_elapsed):
+    def print_game_statistics(self, algorithm: str, result: str, cost: int, expanded_nodes: int, frontier_nodes: int, solution, time_elapsed, heuristic=None):
         print('- Algorithm: {}'.format(algorithm))
         print('- Result: {}'.format(result))
         print('- Cost: {}'.format(cost))
@@ -34,6 +34,8 @@ class Solver:
         print('- Frontier Nodes: {}'.format(frontier_nodes))
         print('- Solution: {}'.format(solution))
         print('- Time elapsed: {}'.format(time_elapsed))
+        if heuristic is not None:
+            print('- Heuristic: {}'.format(heuristic.__name__))
         print()
 
 
@@ -105,7 +107,11 @@ class Solver:
         initial_state = FillZone(grid_size, grid, color_amount, turns)
         start = Node(state=initial_state, parent=None, action=None)
         frontier = PriorityQueue()
-        frontier.add((start, heuristic(start.state.grid, grid_size)))
+        if heuristic.__name__ == 'remaining_colors_heuristic':
+            frontier.add((start, heuristic(start.state.grid, color_amount)))
+        else:
+            frontier.add((start, heuristic(start.state.grid, grid_size)))
+            
         # Initialize an empty explored set
         self.explored = set()
         while True:
@@ -136,10 +142,13 @@ class Solver:
             for action, state in self.neighbors(n[0].state):
                 if not frontier.contains_state(state) and state not in self.explored:
                     child = Node(state=state, parent=n, action=action)
-                    frontier.add((child, heuristic(child.state.grid, grid_size)))
+                    if heuristic.__name__ == 'remaining_colors_heuristic':
+                        frontier.add((child, heuristic(child.state.grid, color_amount)))
+                    else:
+                        frontier.add((child, heuristic(child.state.grid, grid_size)))
         end_time = time.time()
 
-        self.print_game_statistics('Greedy', result, cost, self.num_explored, len(frontier.frontier), actions, end_time - start_time)
+        self.print_game_statistics('Greedy', result, cost, self.num_explored, len(frontier.frontier), actions, end_time - start_time, heuristic)
 
 def remaining_colors_heuristic(grid, color_amount):
     colors = set()
@@ -222,6 +231,13 @@ def generate_random_grid(grid_size: int, color_amount: int):
         grid.append(row)
     return grid
 
+def print_grid(grid):
+    for row in grid:
+        for color in row:
+            print(color.name, end=' ')
+        print()
+    print()
+
     
 
 if __name__ == "__main__":
@@ -258,7 +274,9 @@ if __name__ == "__main__":
     dfs = DeepFirstSearch()
     bfs = BreadthFirstSearch()
 
+    print_grid(grid)
+
     solver.uninformed_method(dfs, grid_size, grid, color_amount, turns)
     solver.uninformed_method(bfs, grid_size, grid, color_amount, turns)
 
-    solver.greedy(grid_size, grid, color_amount, turns, remaining_colors_heuristic)
+    solver.greedy(grid_size, grid, color_amount, turns, bronson_distance_heuristic)
