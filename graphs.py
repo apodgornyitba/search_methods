@@ -3,5 +3,5 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # Read output file
-df = pd.read_csv('./results/output3.txt', header=None)
+df = pd.read_csv('./results/output3.csv')
 print(df)

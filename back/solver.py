@@ -8,6 +8,7 @@ import copy
 import time
 import sys
 import os
+import csv
 
 class Solver:
     def __init__(self):
@@ -38,18 +39,16 @@ class Solver:
         print('\n')
 
 
-    def to_file(self, algorithm: str, grid_size: int, result: str, cost: int, expanded_nodes: int, frontier_nodes: int, time_elapsed, heuristic=None):
+    def to_file(self, algorithm: str, grid_size: int, cost: int, expanded_nodes: int, frontier_nodes: int, time_elapsed, heuristic=None):
         if not os.path.exists('results'):
             os.makedirs('results')
-        with open('results/output{}.txt'.format(grid_size), 'a') as f:
-            f.write('Algorithm {}\n'.format(algorithm))
-            f.write('Result {}\n'.format(result))
-            f.write('Cost {}\n'.format(cost))
-            f.write('Expanded Nodes {}\n'.format(expanded_nodes))
-            f.write('Frontier Nodes {}\n'.format(frontier_nodes))
-            f.write('Time elapsed {}\n'.format(time_elapsed))
-            if heuristic is not None:
-                f.write('Heuristic {}\n'.format(heuristic))
+        if not os.path.isfile('results/output{}.csv'.format(grid_size)):
+            with open('results/output{}.csv'.format(grid_size), 'a', newline='') as f:
+                writer = csv.writer(f)
+                writer.writerow(['Algorithm', 'Cost', 'Expanded Nodes', 'Frontier Nodes', 'Time elapsed', 'Heuristic'])
+        with open('results/output{}.csv'.format(grid_size), 'a', newline='') as f:
+            writer = csv.writer(f)
+            writer.writerow([algorithm, cost, expanded_nodes, frontier_nodes, time_elapsed, heuristic])
 
     def uninformed_method(self, algorithm, grid_size: int, grid, color_amount: int, turns: int, input_file: str = None):
         self.num_explored = 0
@@ -108,7 +107,7 @@ class Solver:
         end_time = time.time()
 
         algorithm = algorithm.name
-        self.to_file(algorithm, len(grid), result, cost, self.num_explored, len(frontier.frontier), end_time - start_time)
+        self.to_file(algorithm, len(grid), cost, self.num_explored, len(frontier.frontier), end_time - start_time)
         for cell in starting_zone:
             grid[cell[0]][cell[1]] = starting_color
 
@@ -181,7 +180,7 @@ class Solver:
                             frontier.add((child, child.get_current_cost() + globals()[heuristic](grid_size, child.state.current_color_cells)))
                             
         end_time = time.time()
-        self.to_file(algorithm, len(grid), result, cost, self.num_explored, len(frontier.frontier), end_time - start_time, heuristic)
+        self.to_file(algorithm, len(grid), cost, self.num_explored, len(frontier.frontier), end_time - start_time, heuristic)
         for cell in starting_zone:
             grid[cell[0]][cell[1]] = starting_color
 
