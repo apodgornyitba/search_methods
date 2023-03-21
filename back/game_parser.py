@@ -9,8 +9,8 @@ class Parser():
     def __init__(self):
         pass
 
-    @staticmethod
-    def parse_color_file(filename: str):
+    @classmethod
+    def parse_color_file(cls, filename: str):
         with open(filename, 'r') as file:
             # Read in the possible colors from the first line of the file
             color_amount = int(file.readline())
@@ -24,10 +24,10 @@ class Parser():
             for line in file:
                 color_matrix.append(list(map(int, line.strip().split(" "))))
                 
-            return (color_amount, color_matrix)
+        return color_amount, color_matrix
     
-    @staticmethod
-    def parse_solution_file(filename: str):
+    @classmethod
+    def parse_solution_file(cls, filename: str):
         with open(filename, 'r') as file:
             grid = []
             solution = []
@@ -46,8 +46,8 @@ class Parser():
                 line = file.readline()
             return (grid, len(color_amount), solution)
 
-    @staticmethod
-    def generate_solution_file(algorithm: str, grid, input_file: str, solution):
+    @classmethod
+    def generate_solution_file(cls, algorithm: str, grid, input_file: str, solution):
         if input_file is None:
             filename = '{}-sol-{}x{}.txt'.format(algorithm, len(grid), len(grid))
         else:

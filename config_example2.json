@@ -1,0 +1,11 @@
+{
+    "file_path" : "./input_grids/3x3.txt",
+    "methods": {
+        "bfs": true,
+        "dfs": true,
+        "greedy": true,
+        "astar": true
+        },      
+    "turns" : 100,
+    "heuristic": "remaining_colors_heuristic"
+}

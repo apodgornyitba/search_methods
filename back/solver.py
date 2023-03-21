@@ -35,7 +35,7 @@ class Solver:
         print('- Solution: {}'.format(solution))
         print('- Time elapsed: {}'.format(time_elapsed))
         if heuristic is not None:
-            print('- Heuristic: {}'.format(heuristic.__name__))
+            print('- Heuristic: {}'.format(heuristic))
         print()
 
 
@@ -99,11 +99,6 @@ class Solver:
         self.print_game_statistics(algorithm, result, cost, self.num_explored, len(frontier.frontier), actions, end_time - start_time)
         for cell in starting_zone:
             grid[cell[0]][cell[1]] = starting_color
-        print(grid)
-        if not input_file is None:
-            parser.generate_solution_file(algorithm, grid, input_file, actions)
-        else:
-            parser.generate_solution_file(algorithm=algorithm, input_file = None, grid= grid,solution= actions)
 
     
     def informed_method(self, algorithm: str, grid_size: int, grid, color_amount: int, turns: int, heuristic, input_file: str = None):
@@ -121,12 +116,12 @@ class Solver:
 
         start = Node(state=initial_state, parent=None, action=None)
         frontier = PriorityQueue()
-        if heuristic.__name__ == 'remaining_colors_heuristic':
-            frontier.add((start, heuristic(start.state.grid, color_amount)))
-        elif heuristic.__name__ == 'color_fraction_heuristic':
-            frontier.add((start, heuristic(start.state.grid, grid_size)))
+        if heuristic == 'remaining_colors_heuristic':
+            frontier.add((start, globals()[heuristic](start.state.grid, color_amount)))
+        elif heuristic == 'color_fraction_heuristic':
+            frontier.add((start, globals()[heuristic](start.state.grid, grid_size)))
         else:
-            frontier.add((start, heuristic(grid_size, start.state.current_color_cells)))
+            frontier.add((start, globals()[heuristic](grid_size, start.state.current_color_cells)))
             
         # Initialize an empty explored set
         self.explored = set()
@@ -159,31 +154,24 @@ class Solver:
                 if not frontier.contains_state(state) and state not in self.explored:
                     child = Node(state=state, parent=n, action=action)
                     if algorithm == 'greedy':
-                        if heuristic.__name__ == 'remaining_colors_heuristic':
-                            frontier.add((child, heuristic(child.state.grid, color_amount)))
-                        elif heuristic.__name__ == 'color_fraction_heuristic':
-                            frontier.add((child, heuristic(child.state.grid, grid_size)))
+                        if heuristic == 'remaining_colors_heuristic':
+                            frontier.add((child, globals()[heuristic](child.state.grid, color_amount)))
+                        elif heuristic == 'color_fraction_heuristic':
+                            frontier.add((child, globals()[heuristic](child.state.grid, grid_size)))
                         else:
-                            frontier.add((child, heuristic(grid_size, child.state.current_color_cells)))
-                    elif algorithm == 'a_star':
-                        if heuristic.__name__ == 'remaining_colors_heuristic':
-                            frontier.add((child, child.get_current_cost() + heuristic(child.state.grid, color_amount)))
-                        elif heuristic.__name__ == 'color_fraction_heuristic':
-                            frontier.add((child, child.get_current_cost() + heuristic(child.state.grid, grid_size)))
+                            frontier.add((child, globals()[heuristic](grid_size, child.state.current_color_cells)))
+                    elif algorithm == 'astar':
+                        if heuristic == 'remaining_colors_heuristic':
+                            frontier.add((child, child.get_current_cost() + globals()[heuristic](child.state.grid, color_amount)))
+                        elif heuristic == 'color_fraction_heuristic':
+                            frontier.add((child, child.get_current_cost() + globals()[heuristic](child.state.grid, grid_size)))
                         else:
-                            frontier.add((child, child.get_current_cost() + heuristic(grid_size, child.state.current_color_cells)))
+                            frontier.add((child, child.get_current_cost() + globals()[heuristic](grid_size, child.state.current_color_cells)))
                             
         end_time = time.time()
-
         self.print_game_statistics(algorithm, result, cost, self.num_explored, len(frontier.frontier), actions, end_time - start_time, heuristic)
-        
         for cell in starting_zone:
             grid[cell[0]][cell[1]] = starting_color
-        
-        if not input_file is None:
-            parser.generate_solution_file(algorithm, grid, input_file, actions)
-        else:
-            parser.generate_solution_file(algorithm=algorithm, input_file = None, grid= grid,solution= actions)
 
 
 def remaining_colors_heuristic(grid, color_amount):
@@ -260,64 +248,4 @@ def bronson_distance_heuristic(grid_size, current_color_cells):
     heuristic = max(distances.values())
     return heuristic
 
-def generate_random_grid(grid_size: int, color_amount: int):
-    grid = []
-    for i in range(grid_size):
-        row = []
-        for j in range(grid_size):
-            row.append(random.randint(0, color_amount - 1))
-        grid.append(row)
-    return grid
 
-def print_grid(grid):
-    for row in grid:
-        for color in row:
-            print(color.name, end=' ')
-        print()
-    print()
-
-    
-
-if __name__ == "__main__":
-    n = len(sys.argv)
-    turns = 30
-    input_file = None
-    
-    if n > 5:
-        raise Exception('Only Grid size and optionally turns must be provided as argument')
-
-    parser = Parser()
-
-    match sys.argv[1]:    
-        case '-r':
-            if sys.argv[2] is None or int(sys.argv[2]) <= 0:
-                raise Exception('Invalid grid size')
-            grid_size = int(sys.argv[2])
-            if sys.argv[3] is None or int(sys.argv[3]) <= 0:
-                raise Exception('Invalid color amount')
-            color_amount = int(sys.argv[3])
-            if sys.argv[4] is None or int(sys.argv[4]) <= 0:
-                raise Exception('Invalid turn amount')
-            turns = int(sys.argv[4])
-            grid = generate_random_grid(grid_size, color_amount)
-        case _:
-            if sys.argv[1] is None:
-                raise Exception('Invalid file path')
-            if sys.argv[2] is None:
-                raise Exception('Invalid turn amount')
-            (color_amount, grid) = Parser.parse_color_file(sys.argv[1])
-            grid_size = len(grid)
-            input_file = sys.argv[1]
-            turns = int(sys.argv[2])
-
-    solver = Solver()
-    dfs = DeepFirstSearch()
-    bfs = BreadthFirstSearch()
-
-    # print_grid(grid)
-
-    solver.uninformed_method(dfs, grid_size, grid, color_amount, turns, input_file)
-    solver.uninformed_method(bfs, grid_size, grid, color_amount, turns, input_file)
-
-    solver.informed_method('greedy', grid_size, grid, color_amount, turns, remaining_colors_heuristic, input_file)
-    solver.informed_method('a_star', grid_size, grid, color_amount, turns, bronson_distance_heuristic, input_file)

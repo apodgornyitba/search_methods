@@ -1,0 +1,12 @@
+{
+    "grid_size": 5,
+    "color_amount": 4,
+    "methods": {
+        "bfs": true,
+        "dfs": true,
+        "greedy": true,
+        "astar": true
+        },      
+    "turns" : 100,
+    "heuristic": "remaining_colors_heuristic"
+}
