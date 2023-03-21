@@ -104,9 +104,9 @@ class Solver:
             parser.generate_solution_file(algorithm, grid, input_file, actions)
         else:
             parser.generate_solution_file(algorithm=algorithm, input_file = None, grid= grid,solution= actions)
-        
 
-    def greedy(self, grid_size: int, grid, color_amount: int, turns: int, heuristic, input_file: str = None):
+    
+    def informed_method(self, algorithm: str, grid_size: int, grid, color_amount: int, turns: int, heuristic, input_file: str = None):
         self.num_explored = 0
         actions = []
         result = 'LOSS'
@@ -156,15 +156,19 @@ class Solver:
             for action, state in self.neighbors(n[0].state):
                 if not frontier.contains_state(state) and state not in self.explored:
                     child = Node(state=state, parent=n, action=action)
-                    if heuristic.__name__ == 'remaining_colors_heuristic':
-                        frontier.add((child, heuristic(child.state.grid, color_amount)))
-                    else:
-                        frontier.add((child, heuristic(child.state.grid, grid_size)))
+                    if algorithm == 'greedy':
+                        if heuristic.__name__ == 'remaining_colors_heuristic':
+                            frontier.add((child, heuristic(child.state.grid, color_amount)))
+                        else:
+                            frontier.add((child, heuristic(child.state.grid, grid_size)))
+                    elif algorithm == 'a_star':
+                        if heuristic.__name__ == 'remaining_colors_heuristic':
+                            frontier.add((child, child.get_current_cost() + heuristic(child.state.grid, color_amount)))
+                        else:
+                            frontier.add((child, child.get_current_cost() + heuristic(child.state.grid, grid_size)))
         end_time = time.time()
 
-
-        algorithm = 'Greedy'
-        self.print_game_statistics('Greedy', result, cost, self.num_explored, len(frontier.frontier), actions, end_time - start_time, heuristic)
+        self.print_game_statistics(algorithm, result, cost, self.num_explored, len(frontier.frontier), actions, end_time - start_time, heuristic)
         
         for cell in starting_zone:
             grid[cell[0]][cell[1]] = starting_color
@@ -173,71 +177,6 @@ class Solver:
             parser.generate_solution_file(algorithm, grid, input_file, actions)
         else:
             parser.generate_solution_file(algorithm=algorithm, input_file = None, grid= grid,solution= actions)
-
-    def a_search(self, grid_size: int, grid, color_amount: int, turns: int, heuristic, input_file: str = None):
-        self.num_explored = 0
-        actions = []
-        result = 'LOSS'
-        cost = None
-        
-        start_time = time.time()
-
-        starting_color = grid[0][0]         # Saving it bc algotirhm overrides it
-        initial_state = FillZone(grid_size, grid, color_amount, turns)
-        starting_zone = initial_state.current_color_cells
-
-        start = Node(state=initial_state, parent=None, action=None)
-        frontier = PriorityQueue()
-        if heuristic.__name__ == 'remaining_colors_heuristic':
-            frontier.add((start, heuristic(start.state.grid, color_amount)))
-        else:
-            frontier.add((start, heuristic(start.state.grid, grid_size)))
-            
-        # Initialize an empty explored set
-        self.explored = set()
-        while True:
-            if frontier.empty():
-                break
-            n = frontier.remove()
-            self.num_explored += 1
-
-            # If node is the goal, then we have a solution
-            if n[0].state.game_status == GameStatus.WIN:
-                result = 'WIN'
-                while n[0].parent is not None:
-                    actions.append(n[0].action.name)
-                    n = n[0].parent
-                actions.reverse()
-                self.solution = actions
-                cost = len(actions)
-                break
-
-            # Mark node as explored
-            self.explored.add(n[0].state)
-
-            # If game finished, don't expand solution
-            if n[0].state.game_status == GameStatus.LOSS:
-                continue
-
-            # Add neighbors to frontier
-            for action, state in self.neighbors(n[0].state):
-                if not frontier.contains_state(state) and state not in self.explored:
-                    child = Node(state=state, parent=n, action=action)
-                    if heuristic.__name__ == 'remaining_colors_heuristic':
-                        frontier.add((child, child.get_current_cost() + heuristic(child.state.grid, color_amount)))
-                    else:
-                        frontier.add((child, child.get_current_cost() + heuristic(child.state.grid, grid_size)))
-        end_time = time.time()
-
-        algorithm = 'A_star'
-        self.print_game_statistics('A_star', result, cost, self.num_explored, len(frontier.frontier), actions, end_time - start_time, heuristic) 
-        for cell in starting_zone:
-            grid[cell[0]][cell[1]] = starting_color
-        if not input_file is None:
-            parser.generate_solution_file(algorithm, grid, input_file, actions)
-        else:
-            parser.generate_solution_file(algorithm=algorithm, input_file = None, grid= grid,solution= actions)
-
 
 
 def remaining_colors_heuristic(grid, color_amount):
@@ -371,5 +310,5 @@ if __name__ == "__main__":
     solver.uninformed_method(dfs, grid_size, grid, color_amount, turns, input_file)
     solver.uninformed_method(bfs, grid_size, grid, color_amount, turns, input_file)
 
-    solver.greedy(grid_size, grid, color_amount, turns, remaining_colors_heuristic, input_file)
-    solver.a_search(grid_size, grid, color_amount, turns, bronson_distance_heuristic, input_file)
+    solver.informed_method('greedy', grid_size, grid, color_amount, turns, remaining_colors_heuristic, input_file)
+    solver.informed_method('a_star', grid_size, grid, color_amount, turns, color_fraction_heuristic, input_file)
