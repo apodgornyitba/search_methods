@@ -20,7 +20,7 @@ import sys
 
 from gamecolor import GameColor, Color
 from fill_zone import FillZone
-from parser import Parser
+from game_parser import Parser
 
 # N: Number of rows and columns
 # M: Number of colors available

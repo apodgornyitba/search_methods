@@ -2,7 +2,7 @@
     "grid_size": 5,
     "color_amount": 4,
     "methods": {
-        "bfs": true,
+        "bfs": false,
         "dfs": true,
         "greedy": true,
         "astar": true

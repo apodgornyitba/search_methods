@@ -1,14 +1,12 @@
 import heapq
 from node import Node
-from frontier import DeepFirstSearch, BreadthFirstSearch, PriorityQueue
+from frontier import PriorityQueue
 from fill_zone import FillZone, GameStatus
-from gamecolor import Color, HexColor
-from game_parser import Parser
+from gamecolor import Color
 
 import copy
 import time
 import sys
-import random
 
 class Solver:
     def __init__(self):
