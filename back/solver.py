@@ -2,7 +2,7 @@ from node import Node
 from frontier import DeepFirstSearch, BreadthFirstSearch
 from fill_zone import FillZone, GameStatus
 from gamecolor import Color, HexColor
-from parser import Parser
+from game_parser import Parser
 
 import copy
 import time
