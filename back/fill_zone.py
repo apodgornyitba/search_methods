@@ -5,7 +5,6 @@ from gamecolor import GameColor, Color
 
 import copy
 
-# from TP1.back.node import Grid
 class Direction(IntEnum):
     TOP = 1
     BOTTOM = 2
@@ -55,7 +54,6 @@ class FillZone:
     # Returns GameStatus after move
     def change_color(self, new_color: Color):
         self.current_color = new_color
-        #print('Changing color to {}'.format(new_color.value))
 
         frontier_size = len(self.__frontier_queue)
         for i in range(frontier_size):
@@ -63,20 +61,12 @@ class FillZone:
             self.__expand_frontier(cell.x, cell.y, cell.dir_from)
         
         if self.remaining_cells <= 0:       # TODO: Check it stops at zero
-            # print('You won')
             self.game_status = GameStatus.WIN
         
         if self.turns <= 0:
-            # print('You lost')
             self.game_status = GameStatus.LOSS
         
         self.turns = self.turns - 1
-        # print('Remaining turns: {}'.format(self.turns))
-        # print('Remaining cells: {}'.format(self.remaining_cells))
-        # print('Frontier cells: {}'.format(self.__frontier_queue.qsize()))
-        #for cell in self.__frontier_queue:
-        #    print('- x: {}, y: {}, from: {}'.format(cell.x, cell.y, cell.dir_from.name))
-        #print(self.grid)
         return self.game_status
 
     def __is_frontier(self, x: int, y: int):
@@ -90,10 +80,6 @@ class FillZone:
             return True
         return False
     
-    # x.y
-    # 0.0 0.1 0.2
-    # 1.0 1.1 1.2
-    # 2.0 2.1 2.2
     def __expand_frontier(self, x: int, y: int, dir_from: Direction):
         # Calculate if expansion is needed and do recursively
         if x+1 < self.__grid_size and self.current_color == self.grid[x+1][y] and dir_from != Direction.BOTTOM:
@@ -112,7 +98,6 @@ class FillZone:
             self.remaining_cells = self.remaining_cells - 1
             self.__expand_frontier(x, y+1, Direction.LEFT)
         if y>0 and self.current_color == self.grid[x][y-1] and dir_from != Direction.LEFT:
-            # raise Exception('current is {} and prev is {}'.format(self.current_color, self.grid[x][y-1]))
             self.current_color_cells.append((x, y-1))
             self.grid[x][y-1] = GameColor.CURRENT
             self.remaining_cells = self.remaining_cells - 1

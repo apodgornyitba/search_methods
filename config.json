@@ -8,5 +8,5 @@
         "astar": true
     },
     "turns" : 1000,
-    "heuristic": "color_fraction_heuristic"
+    "heuristic": "bronson_distance_heuristic"
 }

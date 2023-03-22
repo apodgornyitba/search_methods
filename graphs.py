@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 
-x = np.array([3, 4, 5])#, 6, 7, 8, 9, 10])
+x = np.array([3, 4, 5, 6, 7, 8, 9, 10])
 y = {}
 
 algs = []
@@ -12,7 +12,7 @@ cols = []
 cost_fig, cost_ax = plt.subplots(figsize=(12, 8))
 time_fig, time_ax = plt.subplots(figsize=(12, 8))
 frontier_fig, frontier_ax = plt.subplots(figsize=(12, 8))
-expanded_fig, expanded_ax = plt.subplots(figsize=(12, 8))  # figsize=(7, 4)
+expanded_fig, expanded_ax = plt.subplots(figsize=(12, 8))
 
 colors = ['red', 'blue', 'yellow', 'green', 'orange', 'purple', 'brown', 'pink']
 
@@ -59,27 +59,18 @@ for i in x:
                 if col not in ["Algorithm", "Heuristic"]:
                     if col not in cols:
                         cols.append(col)
-                    #print(group[col])
                     if col not in y[alg_name]:
                         y[alg_name][col] = {}
                         y[alg_name][col]['values'] = []
                         y[alg_name][col]['errors'] = []
                     y[alg_name][col]['values'].append(group_h[col].mean())
-                    #print('{}->{}->\'values\': {}'.format(alg_name, col, group[col].mean()))
                     y[alg_name][col]['errors'].append(group_h[col].std())
-                    #print('{}->{}->\'errors\': {}'.format(alg_name, col, group[col].std()))
-                    #if col == 'Cost':
-                        #print(y[alg_name][col]['values'][-1])
 
 legends = []
-#print(algs)
-#print(cols)
 color_idx = 0
 for alg in algs:
     legends.append(alg)
     for col in cols:
-        if alg in ['greedy, bronson_distance_heuristic', 'astar, bronson_distance_heuristic']:
-            print('{}, {}: {}'.format(alg, col, y[alg][col]))
         match col:
             case 'Cost':
                 cost_ax.errorbar(x=x[0:len(y[alg][col]['values'])], y=y[alg][col]['values'], yerr=y[alg][col]['errors'], linestyle='dotted', fmt='o', capsize=4, color=colors[color_idx])
