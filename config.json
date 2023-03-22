@@ -1,5 +1,5 @@
 {
-    "grid_size": 5,
+    "grid_size": 3,
     "color_amount": 6,
     "methods": {
         "bfs": false,
