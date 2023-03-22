@@ -163,7 +163,7 @@ class Solver:
             # Add neighbors to frontier
             for action, state in self.neighbors(n[0].state):
                 if not frontier.contains_state(state) and state not in self.explored:
-                    child = Node(state=state, parent=n, action=action)
+                    child = Node(state=state, parent=n, action=action, cost=n[0].cost + 1)
                     if algorithm == 'greedy':
                         if heuristic == 'remaining_colors_heuristic':
                             frontier.add((child, globals()[heuristic](child.state.grid, color_amount)))
@@ -173,11 +173,11 @@ class Solver:
                             frontier.add((child, globals()[heuristic](grid_size, child.state.current_color_cells)))
                     elif algorithm == 'astar':
                         if heuristic == 'remaining_colors_heuristic':
-                            frontier.add((child, child.get_current_cost() + globals()[heuristic](child.state.grid, color_amount)))
+                            frontier.add((child, child.cost + globals()[heuristic](child.state.grid, color_amount)))
                         elif heuristic == 'color_fraction_heuristic':
-                            frontier.add((child, child.get_current_cost() + globals()[heuristic](child.state.grid, grid_size)))
+                            frontier.add((child, child.cost + globals()[heuristic](child.state.grid, grid_size)))
                         else:
-                            frontier.add((child, child.get_current_cost() + globals()[heuristic](grid_size, child.state.current_color_cells)))
+                            frontier.add((child, child.cost + globals()[heuristic](grid_size, child.state.current_color_cells)))
                             
         end_time = time.time()
         self.to_file(algorithm, len(grid), cost, self.num_explored, len(frontier.frontier), end_time - start_time, heuristic)
