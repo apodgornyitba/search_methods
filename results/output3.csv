@@ -1,0 +1,17 @@
+Algorithm,Cost,Expanded Nodes,Frontier Nodes,Time elapsed,Heuristic
+BFS,3,26,13,0.006981372833251953,
+DFS,3,14,2,0.003989219665527344,
+greedy,4,27,7,0.009011030197143555,bronson_distance_heuristic
+astar,4,27,7,0.006953716278076172,bronson_distance_heuristic
+BFS,4,43,11,0.011968135833740234,
+DFS,4,12,9,0.00296783447265625,
+greedy,4,33,21,0.010972976684570312,bronson_distance_heuristic
+astar,4,33,21,0.010968208312988281,bronson_distance_heuristic
+BFS,5,87,32,0.029895782470703125,
+DFS,6,14,17,0.003988981246948242,
+greedy,5,68,43,0.02393507957458496,bronson_distance_heuristic
+astar,5,68,43,0.02196812629699707,bronson_distance_heuristic
+BFS,2,8,8,0.001994609832763672,
+DFS,2,9,2,0.002964019775390625,
+greedy,2,8,8,0.001993894577026367,bronson_distance_heuristic
+astar,2,8,8,0.002026796340942383,bronson_distance_heuristic
