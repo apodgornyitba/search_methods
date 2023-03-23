@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 
-x = np.array([3, 4, 5, 6, 7, 8, 9, 10])
+x = np.array([3, 4, 5])#, 6, 7, 8, 9, 10])
 y = {}
 
 algs = []
@@ -56,7 +56,7 @@ for i in x:
                 y[alg_name] = {}
             
             for col in group_h:
-                if col not in ["Algorithm", "Heuristic"]:
+                if col not in ["Algorithm", "Heuristic", "Result"]:
                     if col not in cols:
                         cols.append(col)
                     if col not in y[alg_name]:

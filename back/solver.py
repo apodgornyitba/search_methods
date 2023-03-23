@@ -40,16 +40,16 @@ class Solver:
         print('\n')
 
 
-    def to_file(self, algorithm: str, grid_size: int, cost: int, expanded_nodes: int, frontier_nodes: int, time_elapsed, heuristic=None):
+    def to_file(self, algorithm: str, result: str, grid_size: int, cost: int, expanded_nodes: int, frontier_nodes: int, time_elapsed, heuristic=None):
         if not os.path.exists('results'):
             os.makedirs('results')
         if not os.path.isfile('results/output{}.csv'.format(grid_size)):
             with open('results/output{}.csv'.format(grid_size), 'a', newline='') as f:
                 writer = csv.writer(f)
-                writer.writerow(['Algorithm', 'Cost', 'Expanded Nodes', 'Frontier Nodes', 'Time elapsed', 'Heuristic'])
+                writer.writerow(['Algorithm', 'Result', 'Cost', 'Expanded Nodes', 'Frontier Nodes', 'Time elapsed', 'Heuristic'])
         with open('results/output{}.csv'.format(grid_size), 'a', newline='') as f:
             writer = csv.writer(f)
-            writer.writerow([algorithm, cost, expanded_nodes, frontier_nodes, time_elapsed, heuristic])
+            writer.writerow([algorithm, result, cost, expanded_nodes, frontier_nodes, time_elapsed, heuristic])
 
     def uninformed_method(self, algorithm, grid_size: int, grid, color_amount: int, turns: int, input_file: str = None):
         self.num_explored = 0
@@ -109,7 +109,7 @@ class Solver:
         end_time = time.time()
 
         algorithm = algorithm.name
-        self.to_file(algorithm, len(grid), cost, self.num_explored, len(frontier.frontier), end_time - start_time)
+        self.to_file(algorithm, len(grid), result, cost, self.num_explored, len(frontier.frontier), end_time - start_time)
         for cell in starting_zone:
             grid[cell[0]][cell[1]] = starting_color
         if not input_file is None:
@@ -187,7 +187,7 @@ class Solver:
                             frontier.add((child, child.cost + globals()[heuristic](grid_size, child.state.current_color_cells)))
                             
         end_time = time.time()
-        self.to_file(algorithm, len(grid), cost, self.num_explored, len(frontier.frontier), end_time - start_time, heuristic)
+        self.to_file(algorithm, result, len(grid), cost, self.num_explored, len(frontier.frontier), end_time - start_time, heuristic)
         for cell in starting_zone:
             grid[cell[0]][cell[1]] = starting_color
         if not input_file is None:
