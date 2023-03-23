@@ -7,6 +7,6 @@
         "greedy": true,
         "astar": true
     },
-    "turns" : 1000,
+    "turns" : 3,
     "heuristic": "bronson_distance_heuristic"
 }

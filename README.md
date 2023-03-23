@@ -29,18 +29,36 @@ __NOTA:__ Previo a la instalación se debe tener descargado __python__ y __pipen
 ### Algoritmo generador de soluciones
 
 El programa encargado de la resolución del juego es ```solver.py```, y tiene dos modos de ejecución:
-- A través de una grilla pasada como input:
-```shell
-# python solver_file input_file max_turns
-$> python ./game/solver.py ./input_grids/10x10.txt 30
-```
-- Usando una grilla aleatoria generada en runtime:
-```shell
-# python solver_file -r grid_size color_amount max_turns
-$> python ./game/solver.py -r 10 6 30
+
+- A través de una grilla pasada como input
+- Usando una grilla aleatoria generada en runtime
+
+Ambos modos son configurables mediante el archivo ```config.json``` presente, donde si se provee un __file_path__ como atributo se usará la grilla presente en dicho archivo para la ejecución del programa. Caso contrario se deberán proveer atributos sobre la grilla a generar, que son su __grid_size__ y __color_amount__.
+
+```json
+{
+    "file_path": "./input_grids/3x3.txt",
+    ...
+    ó
+    ...
+    "grid_size": 3,
+    "color_amount": 6,
+}
 ```
 
-Además, el algoritmo genera archivos de salida con la grilla evaluada y la solución encontrada para dicha grilla, dentro de la carpeta ```solutions``` donde, por ejemplo, el archivo __"10x10.txt"__ genera, usando los algoritmos DFS y BFS, los correspondientes archivos de salida __"DFS-sol-10x10.txt"__ y __"BFS-sol-10x10.txt"__.
+Luego están los atributos presentes en ambos casos, que son:
+- __methods__: Booleans para elegir los algoritmos a correr.
+- __turns__: Cantidad máxima de turnos para resolver el juego.
+- __heuristic__: Nombre de la heurística a usar para los métodos informados, si se corren. Esta puede ser
+    - ```remaining_colors_heuristic```
+    - ```bronson_distance_heuristic```
+    - ```color_fraction_heuristic``` (no admisible)
+
+De todas formas se proveen dos archivos de ejemplo, ```file_grid_example.json``` y ```random_grid_example.json```, que sirven de ejemplo para los respectivos modos de grilla de input y grilla generada.
+
+### Archivos de salida
+
+El algoritmo genera archivos de salida con la grilla evaluada y la solución encontrada para dicha grilla, dentro de la carpeta ```solutions``` donde, por ejemplo, el archivo __"10x10.txt"__ genera, usando los algoritmos DFS y BFS, los correspondientes archivos de salida __"DFS-sol-10x10.txt"__ y __"BFS-sol-10x10.txt"__.
 
 El formato de dichos archivos es de primero la grilla inicial y luego la serie de acciones necesaria para resolverla, como por ejemplo:
 
@@ -58,6 +76,12 @@ WHITE
 GREEN
 ```
 
+También se generan estadísticas sobre cada ejecución en la carpeta ```results``` en formato ```.csv```, donde el archivo en que se encuentre dicho resultado depende del tamaño de la grilla, siendo que una grilla de tamaño __NxN__ tendrá su resultado en el archivo __outputN.csv__. Estas estadísticas pueden ser luego visualizadas corriendo el script __graphs.py__, que genera gráficos sobre
+- Costo estimado de solución
+- Tiempo de ejecución
+- Cantidad de nodos expandidos
+- Cantidad de nodos frontera
+
 ### Visualizador de soluciones
 
 Este programa muestra visualmente cómo sería el juego usando un camino solución generado por el algoritmo, usando de base los archivos de solución ya mencionados.
@@ -66,5 +90,5 @@ Así, basta llamar al programa ```game.py``` pasando un archivo solución, de la
 
 ```bash
 # python visualizer_file solution_file
-$> python ./game/game.py ./solutions/DFS-sol-10x10.txt
+$> python ./back/game.py ./solutions/DFS-sol-10x10.txt
 ```
