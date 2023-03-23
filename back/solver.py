@@ -3,6 +3,7 @@ from node import Node
 from frontier import PriorityQueue
 from fill_zone import FillZone, GameStatus
 from gamecolor import Color
+from game_parser import Parser
 
 import copy
 import time
@@ -55,6 +56,7 @@ class Solver:
         actions = []
         result = 'LOSS'
         cost = None
+        parser = Parser()
 
         start_time = time.time()
 
@@ -110,6 +112,10 @@ class Solver:
         self.to_file(algorithm, len(grid), cost, self.num_explored, len(frontier.frontier), end_time - start_time)
         for cell in starting_zone:
             grid[cell[0]][cell[1]] = starting_color
+        if not input_file is None:
+            parser.generate_solution_file(algorithm, grid, input_file, actions)
+        else:
+            parser.generate_solution_file(algorithm=algorithm, input_file = None, grid= grid,solution= actions)
 
     
     def informed_method(self, algorithm: str, grid_size: int, grid, color_amount: int, turns: int, heuristic, input_file: str = None):
@@ -117,6 +123,7 @@ class Solver:
         actions = []
         result = 'LOSS'
         cost = None
+        parser = Parser()
 
         starting_color = grid[0][0]         # Saving it bc algotirhm overrides it
 
@@ -183,6 +190,10 @@ class Solver:
         self.to_file(algorithm, len(grid), cost, self.num_explored, len(frontier.frontier), end_time - start_time, heuristic)
         for cell in starting_zone:
             grid[cell[0]][cell[1]] = starting_color
+        if not input_file is None:
+            parser.generate_solution_file(algorithm, grid, input_file, actions)
+        else:
+            parser.generate_solution_file(algorithm=algorithm, input_file = None, grid= grid,solution= actions)
 
 
 def remaining_colors_heuristic(grid, color_amount):
