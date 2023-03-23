@@ -1,12 +1,12 @@
 {
-    "grid_size": 3,
+    "grid_size": 4,
     "color_amount": 6,
     "methods": {
-        "bfs": false,
-        "dfs": false,
+        "bfs": true,
+        "dfs": true,
         "greedy": true,
         "astar": true
     },
-    "turns" : 3,
-    "heuristic": "bronson_distance_heuristic"
+    "turns" : 100,
+    "heuristic": "remaining_colors_heuristic"
 }

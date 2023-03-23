@@ -28,7 +28,13 @@ __NOTA:__ Previo a la instalación se debe tener descargado __python__ y __pipen
 
 ### Algoritmo generador de soluciones
 
-El programa encargado de la resolución del juego es ```solver.py```, y tiene dos modos de ejecución:
+El programa encargado de la resolución del juego es ```main.py```. Para ejecutarlo, parado en la carpeta del TP1 basta con correr:
+
+```sh
+$> py ./back/main.py
+```
+
+Este programa tiene dos modos de ejecución:
 
 - A través de una grilla pasada como input
 - Usando una grilla aleatoria generada en runtime

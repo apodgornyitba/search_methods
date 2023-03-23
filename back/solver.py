@@ -109,7 +109,7 @@ class Solver:
         end_time = time.time()
 
         algorithm = algorithm.name
-        self.to_file(algorithm, len(grid), result, cost, self.num_explored, len(frontier.frontier), end_time - start_time)
+        self.to_file(algorithm, result, len(grid), cost, self.num_explored, len(frontier.frontier), end_time - start_time)
         for cell in starting_zone:
             grid[cell[0]][cell[1]] = starting_color
         if not input_file is None:
@@ -253,7 +253,7 @@ def bronson_distance_heuristic(grid_size, current_color_cells):
                 graph[(i, j)] = []
 
     # Utiliza Dijkstra para encontrar la distancia mínima entre cada celda y la celda más alejada del borde
-    distances = {cell: sys.maxsize for cell in graph.keys()}
+    distances = {cell: 10000 for cell in graph.keys()}
     distances[farthest_cell] = 0
     heap = [(0, farthest_cell)]
     while heap:
